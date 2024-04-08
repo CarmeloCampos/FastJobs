@@ -1,6 +1,6 @@
-from lib.Offer import Offer
-from lib.Log import Log
-from lib.Chain import Chain
+from Offer import Offer
+from Log import Log
+from Chain import Chain
 from typing import Dict, List, Tuple
 import requests, time, sys, json, uuid, traceback
 from requests.models import Response
@@ -29,6 +29,8 @@ MARKETPLACE = "ATVPDKIKX0DER"
 ANDROID_FLEX_VERSION = "3.104.1.39.0"
 USER_AGENT = "Dalvik/2.1.0 (Linux; U; Android 7.1.2; SM-G988N Build/NRD90M)" # Put your user agent here
 REFRESH_SIGNATURE_INTERVAL = 5 # Every 5 minutes
+
+LOGIN_LINK = ""
 
 class FlexUnlimited:
   allHeaders: Dict[str, Dict] = {
@@ -117,7 +119,8 @@ class FlexUnlimited:
     self.__setDesiredWeekdays(desiredWeekdays)
 
     if any(not x for x in [self.refreshToken, self.android_device_id, self.device_serial, self.flex_instance_id]):
-      self.__registerAccount()
+      return
+      #self.__registerAccount()
 
     self.__requestHeaders["x-amz-access-token"] = self.accessToken
     self.__acceptHeaders["x-amz-access-token"] = self.accessToken
@@ -165,7 +168,7 @@ class FlexUnlimited:
     client_id = (self.device_serial.encode() + device_type.encode()).hex()
     return client_id
         
-  def __generate_challenge_link(self) -> Tuple[str, str]:
+  def generate_challenge_link(self) -> Tuple[str, str]:
     self.__generate_device()
     code_verifier = base64.urlsafe_b64encode(secrets.token_bytes(32)).rstrip(b'=').decode()
     client_id = self.__generate_client_id()
@@ -194,7 +197,8 @@ class FlexUnlimited:
     return challenge_link, code_verifier
 
   def __registerAccount(self):
-    link, code_verifier = self.__generate_challenge_link()
+    link, code_verifier = self.generate_challenge_link()
+    LOGIN_LINK = link
     print("Link: " + link)
     maplanding_url = input("Open the previous link (make sure to copy the entire link) in a browser, sign in, and enter the entire resulting URL here:\n")
     parsed_query = parse_qs(urlparse(maplanding_url).query)

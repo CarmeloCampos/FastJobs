@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from lib.Log import Log
+from Log import Log
 
 
 class Offer:
