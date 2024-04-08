@@ -28,18 +28,17 @@ from lib.Log import Log
 from lib.Offer import Offer
 from lib.utils import send_message
 
+configFile = json.load(open('config.json'))
 APP_NAME = "com.amazon.rabbit"
-APP_VERSION = "303338310"
-DEVICE_NAME = "Le X522"
-MANUFACTURER = "LeMobile"
-DEVICE_TYPE = "A1MPSLFC7L5AFK"
-OS_VERSION = "LeEco/Le2_NA/le_s2_na:6.0.1/IFXNAOP5801910272S/61:user/release-keys"
-MARKETPLACE = "ATVPDKIKX0DER"
-ANDROID_FLEX_VERSION = "3.104.1.39.0"
-USER_AGENT = "Dalvik/2.1.0 (Linux; U; Android 7.1.2; SM-G988N Build/NRD90M)"  # Put your user agent here
-REFRESH_SIGNATURE_INTERVAL = 5  # Every 5 minutes
-
-LOGIN_LINK = ""
+APP_VERSION = configFile['APP_VERSION']
+DEVICE_NAME = configFile['DEVICE_NAME']
+MANUFACTURER = configFile['MANUFACTURER']
+DEVICE_TYPE = configFile['DEVICE_TYPE']
+OS_VERSION = configFile['OS_VERSION']
+MARKETPLACE = configFile['MARKETPLACE']
+ANDROID_FLEX_VERSION = configFile['ANDROID_FLEX_VERSION']
+USER_AGENT = configFile['USER_AGENT']
+REFRESH_SIGNATURE_INTERVAL = 5
 
 
 class FlexUnlimited:
@@ -77,34 +76,32 @@ class FlexUnlimited:
     }
 
     def __init__(self) -> None:
-        with open("config.json") as configFile:
-            config = json.load(configFile)
-            self.desiredWarehouses = config["desiredWarehouses"] if len(config["desiredWarehouses"]) >= 1 else []
-            self.minBlockRate = config["minBlockRate"]
-            self.minPayRatePerHour = config["minPayRatePerHour"]
-            self.arrivalBuffer = config["arrivalBuffer"]
-            self.desiredStartTime = config["desiredStartTime"]
-            self.desiredEndTime = config["desiredEndTime"]
-            self.desiredWeekdays = set()
-            self.__retryCount = 0
-            self.__rate_limit_number = 1
-            self.__acceptedOffers = []
-            self.__startTimestamp = time.time()
-            self.__requestHeaders = FlexUnlimited.allHeaders.get("FlexCapacityRequest")
-            self.__acceptHeaders = self.__requestHeaders.copy()
-            self.__accept_headers_last_updated = 0
-            self.refreshToken = config["refreshToken"]
-            self.accessToken = config["accessToken"]
-            self.android_device_id = config["deviceId"]
-            self.device_serial = config["deviceSerial"]
-            self.flex_instance_id = config["flexInstanceId"]
-            self.key_id = config["keyId"]
-            self.key_id_expiration = config["keyIdExpiration"]
-            self.session = requests.Session()
+        self.desiredWarehouses = configFile["desiredWarehouses"] if len(configFile["desiredWarehouses"]) >= 1 else []
+        self.minBlockRate = configFile["minBlockRate"]
+        self.minPayRatePerHour = configFile["minPayRatePerHour"]
+        self.arrivalBuffer = configFile["arrivalBuffer"]
+        self.desiredStartTime = configFile["desiredStartTime"]
+        self.desiredEndTime = configFile["desiredEndTime"]
+        self.desiredWeekdays = set()
+        self.__retryCount = 0
+        self.__rate_limit_number = 1
+        self.__acceptedOffers = []
+        self.__startTimestamp = time.time()
+        self.__requestHeaders = FlexUnlimited.allHeaders.get("FlexCapacityRequest")
+        self.__acceptHeaders = self.__requestHeaders.copy()
+        self.__accept_headers_last_updated = 0
+        self.refreshToken = configFile["refreshToken"]
+        self.accessToken = configFile["accessToken"]
+        self.android_device_id = configFile["deviceId"]
+        self.device_serial = configFile["deviceSerial"]
+        self.flex_instance_id = configFile["flexInstanceId"]
+        self.key_id = configFile["keyId"]
+        self.key_id_expiration = configFile["keyIdExpiration"]
+        self.session = requests.Session()
 
-            desiredWeekdays = config["desiredWeekdays"]
-            self.__setDesiredWeekdays(desiredWeekdays)
-            self.private_key_str = config["privateAttestationKey"]
+        desiredWeekdays = configFile["desiredWeekdays"]
+        self.__setDesiredWeekdays(desiredWeekdays)
+        self.private_key_str = configFile["privateAttestationKey"]
 
     def updateSelf(self, keyUpdate, valueUpdate):
         self[keyUpdate] = valueUpdate
