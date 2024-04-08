@@ -1,10 +1,11 @@
-from threading import Thread, Event
 import json
+from threading import Thread, Event
 
 from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes, ConversationHandler, MessageHandler, filters
 
 from lib.FlexUnlimited import FlexUnlimited
+from tg.menu import MenuMain
 
 flex = FlexUnlimited()
 waiting_login = False
@@ -14,8 +15,10 @@ Finding = None
 Finder = None
 configFile = json.load(open('config.json'))
 
+LOGIN, FIND = range(2)
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Send a message when the command /start is issued."""
     global waiting_login, code_verifier, ReadyLogin
     if flex.needLogin():
@@ -23,27 +26,28 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         link, code_verifier = flex.generate_challenge_link()
         await update.message.reply_text(link)
         waiting_login = True
+        return LOGIN
     else:
-        await update.message.reply_text("Ya estás logueado")
+        await update.message.reply_text("Ya estás logueado", reply_markup=MenuMain())
         ReadyLogin = True
 
 
 async def login(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /login is issued."""
     global waiting_login, code_verifier, ReadyLogin
     if waiting_login:
         try:
-            flex.registerAccount(context.args[0], code_verifier)
-            await update.message.reply_text("Has iniciado sesión")
-            ReadyLogin = True
+            if flex.registerAccount(update.message.text, code_verifier):
+                await update.message.reply_text("Has iniciado sesión", reply_markup=MenuMain())
+                ReadyLogin = True
+            else:
+                await update.message.reply_text("No has podido iniciar sesión")
         except Exception as e:
             await update.message.reply_text("No has podido iniciar sesión")
     else:
-        await update.message.reply_text("No necesitas iniciar sesión")
+        await update.message.reply_text("No necesitas iniciar sesión", reply_markup=MenuMain())
 
 
 async def buscar(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /buscar is issued."""
     global ReadyLogin, Finder, Finding
     if ReadyLogin:
         if Finder is not None:
@@ -55,6 +59,7 @@ async def buscar(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         Finder.start()
     else:
         await update.message.reply_text("Necesitas iniciar sesión con /start")
+
 
 async def startTime(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """ Envía un mensaje con la información de la hora de inicio de trabajo deseada"""
@@ -74,21 +79,14 @@ async def endTime(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 # Define tus comandos
 commandos = [
     ('start', 'Iniciar el bot'),
-    ('login', 'Iniciar sesión'),
-    ('buscar', 'Buscar algo'),
-    ('ver_hora_inicio', 'Mostrar hora preferida para inicio del bloque.'),
-    ('cambiar_hora_inicio', 'Cambia hora preferida para inicio del bloque.'),
-    ('ver_hora_fin', 'Mostrar hora preferida para finalización del bloque.'),
-    ('cambiar_hora_fin', 'Cambia hora preferida para finalización del bloque.'),
-    ('stop', 'Detener búsqueda')
 ]
+
 
 async def postInit(application: Application) -> None:
     await application.bot.set_my_commands(commandos)
 
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /stop is issued."""
     global Finding, Finder
     if Finder is not None:
         Finding.set()
@@ -98,17 +96,28 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.message.reply_text("No hay búsqueda en curso")
 
 
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Operación cancelada")
+    return ConversationHandler.END
+
+
 def main() -> None:
     """Start the bot."""
     application = Application.builder().token(configFile["telegramToken"]).post_init(postInit).build()
 
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("login", login))
-    application.add_handler(CommandHandler("buscar", buscar))
-    application.add_handler(CommandHandler("ver_hora_inicio", startTime))
-    application.add_handler(CommandHandler("cambiar_hora_inicio", changeStartTime))
-    application.add_handler(CommandHandler("ver_hora_fin", endTime))
-    application.add_handler(CommandHandler("stop", stop))
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler("start", start)],
+        states={
+            LOGIN: [MessageHandler(
+                filters.Regex('^https://(www.)?amazon.[a-z]{2,}/.*[?&]openid.oa2.authorization_code=.*'),
+                login)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+    )
+
+    application.add_handler(conv_handler)
+    application.add_handler(MessageHandler(filters.Regex('^BUSCAR$'), buscar))
+    application.add_handler(MessageHandler(filters.Regex('^DETER BUSQUEDA$'), stop))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 

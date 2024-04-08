@@ -77,47 +77,38 @@ class FlexUnlimited:
     }
 
     def __init__(self) -> None:
-        try:
-            with open("config.json") as configFile:
-                config = json.load(configFile)
-                self.desiredWarehouses = config["desiredWarehouses"] if len(
-                    config["desiredWarehouses"]) >= 1 else []  # list of warehouse ids
-                self.minBlockRate = config["minBlockRate"]
-                self.minPayRatePerHour = config["minPayRatePerHour"]
-                self.arrivalBuffer = config["arrivalBuffer"]  # arrival buffer in minutes
-                self.desiredStartTime = config["desiredStartTime"]  # start time in military time
-                self.desiredEndTime = config["desiredEndTime"]  # end time in military time
-                self.desiredWeekdays = set()
-                self.retryLimit = config["retryLimit"]  # number of jobs retrieval requests to perform
-                self.refreshInterval = config["refreshInterval"]  # sets delay in between getOffers requests
-                self.__retryCount = 0
-                self.__rate_limit_number = 1
-                self.__acceptedOffers = []
-                self.__startTimestamp = time.time()
-                self.__requestHeaders = FlexUnlimited.allHeaders.get("FlexCapacityRequest")
-                self.__acceptHeaders = self.__requestHeaders.copy()
-                self.__accept_headers_last_updated = 0
-                self.refreshToken = config["refreshToken"]
-                self.accessToken = config["accessToken"]
-                self.android_device_id = config["deviceId"]
-                self.device_serial = config["deviceSerial"]
-                self.flex_instance_id = config["flexInstanceId"]
-                self.key_id = config["keyId"]
-                self.key_id_expiration = config["keyIdExpiration"]
-                self.session = requests.Session()
+        with open("config.json") as configFile:
+            config = json.load(configFile)
+            self.desiredWarehouses = config["desiredWarehouses"] if len(config["desiredWarehouses"]) >= 1 else []
+            self.minBlockRate = config["minBlockRate"]
+            self.minPayRatePerHour = config["minPayRatePerHour"]
+            self.arrivalBuffer = config["arrivalBuffer"]
+            self.desiredStartTime = config["desiredStartTime"]
+            self.desiredEndTime = config["desiredEndTime"]
+            self.desiredWeekdays = set()
+            self.__retryCount = 0
+            self.__rate_limit_number = 1
+            self.__acceptedOffers = []
+            self.__startTimestamp = time.time()
+            self.__requestHeaders = FlexUnlimited.allHeaders.get("FlexCapacityRequest")
+            self.__acceptHeaders = self.__requestHeaders.copy()
+            self.__accept_headers_last_updated = 0
+            self.refreshToken = config["refreshToken"]
+            self.accessToken = config["accessToken"]
+            self.android_device_id = config["deviceId"]
+            self.device_serial = config["deviceSerial"]
+            self.flex_instance_id = config["flexInstanceId"]
+            self.key_id = config["keyId"]
+            self.key_id_expiration = config["keyIdExpiration"]
+            self.session = requests.Session()
 
-                desiredWeekdays = config["desiredWeekdays"]
-                self.__setDesiredWeekdays(desiredWeekdays)
+            desiredWeekdays = config["desiredWeekdays"]
+            self.__setDesiredWeekdays(desiredWeekdays)
+            self.private_key_str = config["privateAttestationKey"]
 
-                self.private_key_str = config["privateAttestationKey"]
-
-        except KeyError as nullKey:
-            Log.error(f'{nullKey} was not set. Please setup FlexUnlimited as described in the README.')
-            sys.exit()
-        except FileNotFoundError:
-            Log.error(
-                "Config file not found. Ensure a properly formatted 'config.json' file exists in the root directory.")
-            sys.exit()
+    def updateSelf(self, keyUpdate, valueUpdate):
+        self[keyUpdate] = valueUpdate
+        self.__update_config_file({keyUpdate: valueUpdate})
 
     def needLogin(self):
         trueLogin = any(
