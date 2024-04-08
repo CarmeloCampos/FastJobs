@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from Log import Log
-
 
 class Offer:
 
@@ -15,7 +13,7 @@ class Offer:
         self.hidden = offerResponseObject.get("hidden")
         self.ratePerHour = self.blockRate / ((self.endTime - self.startTime).seconds / 3600)
         self.weekday = self.expirationDate.weekday()
-    
+
     def toString(self) -> str:
         blockDuration = (self.endTime - self.startTime).seconds / 3600
 
