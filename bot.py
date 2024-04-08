@@ -1,4 +1,5 @@
 from threading import Thread, Event
+import json
 
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
@@ -11,6 +12,7 @@ code_verifier = ''
 ReadyLogin = False
 Finding = None
 Finder = None
+configFile = json.load(open('config.json'))
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -54,6 +56,36 @@ async def buscar(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     else:
         await update.message.reply_text("Necesitas iniciar sesión con /start")
 
+async def startTime(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """ Envía un mensaje con la información de la hora de inicio de trabajo deseada"""
+    await update.message.reply_text(f"La hora de inicio deseada es: {configFile["desiredStartTime"]}")
+
+
+async def changeStartTime(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """ Envía un mensaje con la información de la hora de inicio de trabajo deseada"""
+    await update.message.reply_text(f"La hora de inicio deseada es: 12")
+
+
+async def endTime(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """ Envía un mensaje con la información de la hora de finalización de trabajo deseada"""
+    await update.message.reply_text(f"La hora de finalización deseada es: {configFile["desiredEndTime"]}")
+
+
+# Define tus comandos
+commandos = [
+    ('start', 'Iniciar el bot'),
+    ('login', 'Iniciar sesión'),
+    ('buscar', 'Buscar algo'),
+    ('ver_hora_inicio', 'Mostrar hora preferida para inicio del bloque.'),
+    ('cambiar_hora_inicio', 'Cambia hora preferida para inicio del bloque.'),
+    ('ver_hora_fin', 'Mostrar hora preferida para finalización del bloque.'),
+    ('cambiar_hora_fin', 'Cambia hora preferida para finalización del bloque.'),
+    ('stop', 'Detener búsqueda')
+]
+
+async def postInit(application: Application) -> None:
+    await application.bot.set_my_commands(commandos)
+
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /stop is issued."""
@@ -68,11 +100,14 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 def main() -> None:
     """Start the bot."""
-    application = Application.builder().token("648441948:AAH8vrwq4lrCfc4Sz8z4pVE_ZvCbRpq-V6A").build()
+    application = Application.builder().token(configFile["telegramToken"]).post_init(postInit).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("login", login))
     application.add_handler(CommandHandler("buscar", buscar))
+    application.add_handler(CommandHandler("ver_hora_inicio", startTime))
+    application.add_handler(CommandHandler("cambiar_hora_inicio", changeStartTime))
+    application.add_handler(CommandHandler("ver_hora_fin", endTime))
     application.add_handler(CommandHandler("stop", stop))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)

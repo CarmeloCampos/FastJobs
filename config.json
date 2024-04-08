@@ -1,4 +1,5 @@
 {
+  "telegramToken": "648441948:AAEeWELEZoDuu2YIWSE7UyCweuiDjdf0whs",
   "minBlockRate": 150,
   "minPayRatePerHour": 32,
   "arrivalBuffer": 15,
