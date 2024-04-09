@@ -9,7 +9,6 @@ import sys
 import time
 import uuid
 from datetime import datetime
-from threading import Event
 from typing import Dict, List, Tuple
 from urllib.parse import unquote, urlparse, parse_qs, urlencode
 
@@ -21,12 +20,12 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from pbkdf2 import PBKDF2
 from prettytable import PrettyTable
 from requests.models import Response
-from telegram import Update
 
 from lib.Chain import Chain
 from lib.Log import Log
 from lib.Offer import Offer
 from lib.utils import send_message
+from sis.temp import get_finder
 
 configFile = json.load(open('config.json'))
 APP_NAME = "com.amazon.rabbit"
@@ -491,7 +490,7 @@ class FlexUnlimited:
                 json=self.__offersRequestBody)
         return response
 
-    def __acceptOffer(self, offer: Offer, tg: Update):
+    def __acceptOffer(self, offer: Offer):
         self.__updateFlexHeaders(self.__acceptHeaders)
         request = self.session.post(FlexUnlimited.routes.get("AcceptOffer"), headers=self.__acceptHeaders,
                                     json={"offerId": offer.id})
@@ -516,19 +515,19 @@ class FlexUnlimited:
 
         if request.status_code == 200:
             self.__acceptedOffers.append(offer)
-            send_message(tg.message.chat_id, "Un bloque aceptado")
+            send_message(configFile['telegramChatId'], "Un bloque aceptado")
             Log.info(f"Successfully accepted an offer.")
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
-            send_message(tg.message.chat_id, "Se requirió un captcha para aceptar un bloque.")
+            send_message(configFile['telegramChatId'], "Se requirió un captcha para aceptar un bloque.")
             Log.info(f"A captcha was required to accept an offer.")
             sys.exit()
         else:
-            send_message(tg.message.chat_id, "No se pudo aceptar un bloque. Inténtalo de nuevo.")
+            send_message(configFile['telegramChatId'], "No se pudo aceptar un bloque. Inténtalo de nuevo.")
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
 
-    def __processOffer(self, offer: Offer, tg: Update):
+    def __processOffer(self, offer: Offer):
         if offer.hidden:
             return
 
@@ -549,7 +548,7 @@ class FlexUnlimited:
             if deltaTime < self.arrivalBuffer:
                 return
 
-        self.__acceptOffer(offer, tg)
+        self.__acceptOffer(offer)
         self.sign_accept_headers()
 
     def get_nonce(self, device_id):
@@ -591,10 +590,11 @@ class FlexUnlimited:
         self.__acceptHeaders.update(signature_headers)
         self.__accept_headers_last_updated = time.time()
 
-    def run(self, Finding: Event, tg: Update):
+    def run(self):
         Log.info("Starting job search...")
-        while not Finding.is_set():
-            send_message(tg.message.chat_id, "Buscando bloques...")
+        print("aa", get_finder())
+        while get_finder():
+            print("asdasdasdasd", get_finder())
             if self.__accept_headers_last_updated < time.time() - REFRESH_SIGNATURE_INTERVAL * 60:
                 self.sign_accept_headers()
             offersResponse = self.__getOffers()
@@ -603,7 +603,7 @@ class FlexUnlimited:
                 currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
                 for offer in currentOffers:
                     offerResponseObject = Offer(offerResponseObject=offer)
-                    self.__processOffer(offerResponseObject, tg)
+                    self.__processOffer(offerResponseObject)
             elif offersResponse.status_code == 400:
                 minutes_to_wait = 30 * self.__rate_limit_number
                 Log.info("Rate limit reached. Waiting for " + str(minutes_to_wait) + " minutes.")
@@ -620,4 +620,4 @@ class FlexUnlimited:
                 self.print_request_debug_info(offersResponse)
                 break
             time.sleep(random.randint(3, 17))
-            send_message(tg.message.chat_id, "Ya no busco mas...")
+            Log.info("Job search stopped.")

@@ -1,9 +1,8 @@
 import asyncio
-import json
 
 from telegram import Bot
 
-configFile = json.load(open('config.json'))
+from sis.config import configFile
 
 
 async def send_async_message(chat_id, text):
@@ -13,7 +12,3 @@ async def send_async_message(chat_id, text):
 
 def send_message(chat_id, text):
     asyncio.run(send_async_message(chat_id, text))
-
-
-def finding_filter(text, finding):
-    return text == finding

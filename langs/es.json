@@ -1,0 +1,17 @@
+{
+  "needLogin": "Necesitas iniciar sesión con /start",
+  "readyLogin": "Ya estás logueado",
+  "SEARCHBLOCK": "BUSCAR",
+  "STOPSEARCH": "DETER BUSQUEDA",
+  "CONFIGURATIONS": "Configuraciones",
+  "loggedin": "Conectado",
+  "errorLogin": "No has podido iniciar sesión",
+  "noNeedLogin": "No necesitas iniciar sesión",
+  "toCancel": "Para cancelar el proceso escribe /cancel",
+  "processCanceled": "Proceso cancelado",
+  "start": "Iniciar el bot",
+  "searchInProgress": "Ya hay una búsqueda en curso",
+  "searchStopped": "Búsqueda detenida",
+  "noSearchInProgress": "No hay búsqueda en curso",
+  "searching": "Buscando bloques..."
+}
