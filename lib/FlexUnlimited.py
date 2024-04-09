@@ -421,7 +421,7 @@ class FlexUnlimited:
     @staticmethod
     def __update_config_file(key_pairs: dict):
         try:
-            with open("config.json", "r+") as configFile:
+            with open("json/config.json", "r+") as configFile:
                 config = json.load(configFile)
                 for key in key_pairs:
                     config[key] = key_pairs[key]
