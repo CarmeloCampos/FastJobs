@@ -25,9 +25,9 @@ from lib.Chain import Chain
 from lib.Log import Log
 from lib.Offer import Offer
 from lib.utils import send_message
+from sis.config import configFile
 from sis.temp import get_finder
 
-configFile = json.load(open('config.json'))
 APP_NAME = "com.amazon.rabbit"
 APP_VERSION = configFile['APP_VERSION']
 DEVICE_NAME = configFile['DEVICE_NAME']

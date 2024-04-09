@@ -1,6 +1,6 @@
 from json import load
 
-configFile = load(open('config.json'))
+configFile = load(open('json/config.json'))
 
 flex_data = {
     'waiting_login': False,
