@@ -3,7 +3,7 @@ from telegram.ext import CommandHandler, ContextTypes, ConversationHandler, Mess
 
 from sis.lang import langFile
 from tg.blocks import search, stop_search
-from tg.bot import application
+from tg.bot import application, handle_message
 from tg.start_login import start, login
 
 LOGIN = 0
@@ -28,6 +28,12 @@ def main() -> None:
     application.add_handler(conv_handler)
     application.add_handler(MessageHandler(filters.Regex('^' + langFile["SEARCHBLOCK"] + '$'), search))
     application.add_handler(MessageHandler(filters.Regex('^' + langFile["STOPSEARCH"] + '$'), stop_search))
+    application.add_handler(MessageHandler(filters.Regex('^' + langFile["CONFIGURATIONS"] + '$'), handle_message))
+    application.add_handler(MessageHandler(filters.Regex('^' + langFile["selectHours"] + '$'), handle_message))
+    application.add_handler(MessageHandler(filters.Regex('^' + langFile["backMenu"] + '$'), handle_message))
+    application.add_handler(MessageHandler(filters.Regex('^' + langFile["backConfig"] + '$'), handle_message))
+    application.add_handler(MessageHandler(filters.Regex('^' + langFile["currentStartTime"] + '$'), handle_message))
+    application.add_handler(MessageHandler(filters.Regex('^' + langFile["currentEndTime"] + '$'), handle_message))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 

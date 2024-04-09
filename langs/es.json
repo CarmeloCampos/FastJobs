@@ -1,9 +1,9 @@
 {
   "needLogin": "Necesitas iniciar sesión con /start",
   "readyLogin": "Ya estás logueado",
-  "SEARCHBLOCK": "BUSCAR",
-  "STOPSEARCH": "DETER BUSQUEDA",
-  "CONFIGURATIONS": "Configuraciones",
+  "SEARCHBLOCK": "BUSCAR 🔎",
+  "STOPSEARCH": "DETENER BÚSQUEDA 🛑",
+  "CONFIGURATIONS": "Configuraciones ⚙️",
   "loggedin": "Conectado",
   "errorLogin": "No has podido iniciar sesión",
   "noNeedLogin": "No necesitas iniciar sesión",
@@ -13,5 +13,19 @@
   "searchInProgress": "Ya hay una búsqueda en curso",
   "searchStopped": "Búsqueda detenida",
   "noSearchInProgress": "No hay búsqueda en curso",
-  "searching": "Buscando bloques..."
+  "searching": "Buscando bloques...",
+  "initMenuOptions": "Seleccione una opción del menú de configuraciones: ",
+  "hourlyPay": "💰 Pago por horas",
+  "selectHours": "⏰ Seleccionar horas",
+  "selectDays": "🗓 Seleccionar días",
+  "language": "🌎 Idioma",
+  "selectMenuOptions": "Por favor seleccione una opción: ",
+  "currentStartTime": "🕗 Hora de inicio actual 🏁",
+  "desiredStartTime": "✅ Hora de inicio deseada",
+  "currentEndTime": "☑️ Hora de finalización actual 🤚",
+  "desiredEndTime": "⌛️ Hora de finalización deseada",
+  "backMenu": "⬅️ Volver",
+  "backConfig": "Volver",
+  "currentStartTimeConfig": "La hora de inicio actualmente configurada es: ",
+  "currentEndTimeConfig": "La hora de finalización actualmente configurada es: "
 }
