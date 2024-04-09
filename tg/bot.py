@@ -1,4 +1,5 @@
-from telegram.ext import Application
+from telegram import Update
+from telegram.ext import Application, ContextTypes, ConversationHandler
 
 from sis.config import configFile
 from sis.lang import langFile
@@ -10,6 +11,12 @@ async def set_commands(app: Application) -> None:
         ('start', langFile['start']),
     ])
 
+
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text(langFile['processCanceled'], reply_markup=main_menu)
+    return ConversationHandler.END
+
+
 async def handle_message(update, context):
     user_message = update.message.text
 
@@ -17,7 +24,7 @@ async def handle_message(update, context):
         if user_message == langFile['CONFIGURATIONS']:
             await update.message.reply_text(langFile['initMenuOptions'], reply_markup=config_menu)
         elif user_message == langFile['backMenu']:
-            await update.message.reply_text(langFile['initMenuOptions'],reply_markup=main_menu)
+            await update.message.reply_text(langFile['initMenuOptions'], reply_markup=main_menu)
         elif user_message == langFile['backConfig']:
             await update.message.reply_text(langFile['initMenuOptions'], reply_markup=config_menu)
         elif user_message == langFile['selectHours']:

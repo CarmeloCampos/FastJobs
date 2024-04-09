@@ -7,16 +7,16 @@ main_menu = ReplyKeyboardMarkup([
     [langFile['CONFIGURATIONS']]
 ], resize_keyboard=True)
 
-
 config_menu = ReplyKeyboardMarkup([
-    [langFile['hourlyPay'], langFile['selectHours']],
-    [langFile['selectDays'], langFile['language']],
+    [langFile['hourlyPay'], langFile['blockPay'], langFile['arrivalBuffer']],
+    [langFile['selectDays'], langFile['selectHours']],
     [langFile['backMenu']]
 ], resize_keyboard=True)
-
 
 time_menu = ReplyKeyboardMarkup([
     [langFile['currentStartTime'], langFile['currentEndTime']],
     [langFile['desiredStartTime'], langFile['desiredEndTime']],
     [langFile['backConfig']]
 ], resize_keyboard=True)
+
+arrival_menu = ReplyKeyboardMarkup([["15m", "30m", "45m"]], resize_keyboard=True)

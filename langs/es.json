@@ -16,6 +16,8 @@
   "searching": "Buscando bloques...",
   "initMenuOptions": "Seleccione una opción del menú de configuraciones: ",
   "hourlyPay": "💰 Pago por horas",
+  "blockPay": "💸 Minimo por bloque",
+  "arrivalBuffer": "🚘 Margen de llegada",
   "selectHours": "⏰ Seleccionar horas",
   "selectDays": "🗓 Seleccionar días",
   "language": "🌎 Idioma",
@@ -27,5 +29,12 @@
   "backMenu": "⬅️ Volver",
   "backConfig": "Volver",
   "currentStartTimeConfig": "La hora de inicio actualmente configurada es: ",
-  "currentEndTimeConfig": "La hora de finalización actualmente configurada es: "
+  "currentEndTimeConfig": "La hora de finalización actualmente configurada es: ",
+  "whatIsYourMinHourPay": "¿Cuál es tu pago mínimo por hora?",
+  "payInvalid": "Monto inválido",
+  "hourlyPayUpdated": "Pago por hora actualizado",
+  "whatIsYourMinBlockPay": "¿Cuál es tu pago mínimo por bloque?",
+  "blockPayUpdated": "Pago por bloque actualizado",
+  "arrivalConfig": "¿Cuánto tiempo antes de la hora de inicio deseada quieres llegar?",
+  "arrivalUpdated": "Margen de llegada actualizado"
 }

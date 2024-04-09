@@ -75,12 +75,14 @@ class FlexUnlimited:
     }
 
     def __init__(self) -> None:
-        self.desiredWarehouses = configFile["desiredWarehouses"] if len(configFile["desiredWarehouses"]) >= 1 else []
-        self.minBlockRate = configFile["minBlockRate"]
-        self.minPayRatePerHour = configFile["minPayRatePerHour"]
-        self.arrivalBuffer = configFile["arrivalBuffer"]
-        self.desiredStartTime = configFile["desiredStartTime"]
-        self.desiredEndTime = configFile["desiredEndTime"]
+        self.options = {
+            "desiredWarehouses": configFile["desiredWarehouses"] if len(configFile["desiredWarehouses"]) >= 1 else [],
+            "minBlockRate": configFile["minBlockRate"],
+            "minPayRatePerHour": configFile["minPayRatePerHour"],
+            "arrivalBuffer": configFile["arrivalBuffer"],
+            "desiredStartTime": configFile["desiredStartTime"],
+            "desiredEndTime": configFile["desiredEndTime"],
+        }
         self.desiredWeekdays = set()
         self.__retryCount = 0
         self.__rate_limit_number = 1
@@ -103,7 +105,7 @@ class FlexUnlimited:
         self.private_key_str = configFile["privateAttestationKey"]
 
     def updateSelf(self, keyUpdate, valueUpdate):
-        self[keyUpdate] = valueUpdate
+        self.options[keyUpdate] = valueUpdate
         self.__update_config_file({keyUpdate: valueUpdate})
 
     def needLogin(self):
@@ -126,8 +128,8 @@ class FlexUnlimited:
         self.__offersRequestBody = {
             "apiVersion": "V2",
             "filters": {
-                "serviceAreaFilter": self.desiredWarehouses,
-                "timeFilter": {"endTime": self.desiredEndTime, "startTime": self.desiredStartTime}
+                "serviceAreaFilter": self.options['desiredWarehouses'],
+                "timeFilter": {"endTime": self.options['desiredEndTime'], "startTime": self.options['desiredStartTime']}
             },
             "serviceAreaIds": self.serviceAreaIds
         }
@@ -535,17 +537,17 @@ class FlexUnlimited:
             if offer.weekday not in self.desiredWeekdays:
                 return
 
-        if self.minBlockRate:
-            if offer.blockRate < self.minBlockRate:
+        if self.options['minBlockRate']:
+            if offer.blockRate < self.options['minBlockRate']:
                 return
 
-        if self.minPayRatePerHour:
-            if offer.ratePerHour < self.minPayRatePerHour:
+        if self.options['minPayRatePerHour']:
+            if offer.ratePerHour < self.options['minPayRatePerHour']:
                 return
 
-        if self.arrivalBuffer:
+        if self.options['arrivalBuffer']:
             deltaTime = (offer.expirationDate - datetime.now()).seconds / 60
-            if deltaTime < self.arrivalBuffer:
+            if deltaTime < self.options['arrivalBuffer']:
                 return
 
         self.__acceptOffer(offer)
@@ -592,9 +594,7 @@ class FlexUnlimited:
 
     def run(self):
         Log.info("Starting job search...")
-        print("aa", get_finder())
         while get_finder():
-            print("asdasdasdasd", get_finder())
             if self.__accept_headers_last_updated < time.time() - REFRESH_SIGNATURE_INTERVAL * 60:
                 self.sign_accept_headers()
             offersResponse = self.__getOffers()
