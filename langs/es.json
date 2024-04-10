@@ -41,5 +41,7 @@
   "remove": "❌ Eliminar",
   "add": "✳️ Agregar",
   "addNewDay": "Agrego {} a la lista de días de trabajo.",
-  "alreadyInList": "Este dia ya esta en la lista"
+  "alreadyInList": "Este dia ya esta en la lista",
+  "initDesiredTime": "Por favor, seleccione la hora deseada",
+  "hourlyUpdated": "El tiempo ha sido configurado"
 }
