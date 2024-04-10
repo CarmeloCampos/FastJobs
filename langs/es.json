@@ -16,8 +16,8 @@
   "searching": "Buscando bloques...",
   "initMenuOptions": "Seleccione una opción del menú de configuraciones: ",
   "hourlyPay": "💰 Pago por horas",
-  "blockPay": "💸 Minimo por bloque",
-  "arrivalBuffer": "🚘 Margen de llegada",
+  "blockPay": "💸 Pago mínimo por bloque",
+  "arrivalBuffer": "🏢 🚐 Tiempo hasta el almacén",
   "selectHours": "⏰ Seleccionar horas",
   "selectDays": "🗓 Seleccionar días",
   "language": "🌎 Idioma",
@@ -36,5 +36,10 @@
   "whatIsYourMinBlockPay": "¿Cuál es tu pago mínimo por bloque?",
   "blockPayUpdated": "Pago por bloque actualizado",
   "arrivalConfig": "¿Cuánto tiempo antes de la hora de inicio deseada quieres llegar?",
-  "arrivalUpdated": "Margen de llegada actualizado"
+  "arrivalUpdated": "🏢 🚐 Tiempo hasta el almacén actualizado ✅",
+  "actualConfigDays": "📅 Dias configurados actualmente 📅",
+  "remove": "❌ Eliminar",
+  "add": "✳️ Agregar",
+  "addNewDay": "Agrego {} a la lista de días de trabajo.",
+  "alreadyInList": "Este dia ya esta en la lista"
 }

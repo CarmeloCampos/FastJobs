@@ -7,6 +7,8 @@ from tg.bot import cancel
 from tg.controllers.arrival import start_arrival, update_arrival
 from tg.controllers.block import start_block, update_block
 from tg.controllers.hourly import start_hourly_pay, update_hourly_pay
+from tg.controllers.hoursjobs import show_time_menu, show_actual_times
+from tg.controllers.daysjobs import show_days_menu, show_actual_days, update_days_list
 from tg.menu import config_menu
 
 
@@ -49,12 +51,35 @@ conv_arrival = ConversationHandler(
     fallbacks=[MessageHandler(button_cancel, cancel)],
 )
 
+conv_hourly_jobs = ConversationHandler(
+    entry_points=[MessageHandler(filters.Regex('^' + langFile["selectHours"] + '$'), show_time_menu)],
+    states={
+        'SELECT_HOURS_JOBS': [
+            MessageHandler(filters.Regex('^' + langFile["currentStartTime"] + '$'), show_actual_times),
+            MessageHandler(filters.Regex('^' + langFile["currentEndTime"] + '$'), show_actual_times)
+        ],
+    },
+    fallbacks=[MessageHandler(button_cancel, cancel)],
+)
+
+conv_days_jobs = ConversationHandler(
+    entry_points=[MessageHandler(filters.Regex('^' + langFile["selectDays"] + '$'), show_days_menu)],
+    states={
+        'SELECT_DAYS_JOBS': [
+            MessageHandler(filters.Regex('^' + langFile["actualConfigDays"] + '$'), show_actual_days),
+            MessageHandler(filters.Regex('^' + langFile["add"] + '$'), show_days_menu),
+            MessageHandler(filters.TEXT, update_days_list)
+        ],
+    },
+    fallbacks=[MessageHandler(button_cancel, cancel)],
+)
+
 conv_config = ConversationHandler(
     entry_points=[
         MessageHandler(filters.Regex('^' + re.escape(langFile["CONFIGURATIONS"]) + '$'), start_configuration)
     ],
     states={
-        'WAITING_FOR_ANYTHING': [conv_hourly_pay, conv_min_bloque, conv_arrival,
+        'WAITING_FOR_ANYTHING': [conv_hourly_pay, conv_min_bloque, conv_arrival, conv_days_jobs, conv_hourly_jobs,
                                  MessageHandler(filters.TEXT & ~button_cancel, any_message)],
     },
     fallbacks=[MessageHandler(button_cancel, cancel)],
