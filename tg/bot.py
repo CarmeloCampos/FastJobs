@@ -1,5 +1,8 @@
+from re import escape
+
 from telegram import Update
-from telegram.ext import Application, ContextTypes, ConversationHandler
+from telegram.ext import Application, ContextTypes
+from telegram.ext import ConversationHandler, filters
 
 from sis.config import configFile
 from sis.lang import langFile
@@ -10,6 +13,9 @@ async def set_commands(app: Application) -> None:
     await app.bot.set_my_commands([
         ('start', langFile['start']),
     ])
+
+
+button_cancel = filters.Regex('^' + escape(langFile["backMenu"]) + '$')
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
