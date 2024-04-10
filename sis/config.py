@@ -16,3 +16,8 @@ def set_flex_data(key, value):
 
 def get_flex_data(key):
     return flex_data.get(key)
+
+
+def get_now_data(key):
+    nowFile = load(open('json/config.json'))
+    return nowFile.get(key)
