@@ -16,7 +16,7 @@ config_menu = ReplyKeyboardMarkup([
 time_menu = ReplyKeyboardMarkup([
     [langFile['currentStartTime'], langFile['currentEndTime']],
     [langFile['desiredStartTime'], langFile['desiredEndTime']],
-    [langFile['backConfig']]
+    [langFile['backMenu']]
 ], resize_keyboard=True)
 
 hours_menu = ReplyKeyboardMarkup([
@@ -32,21 +32,19 @@ hours_menu = ReplyKeyboardMarkup([
     ['18:00'], ['18:30'], ['19:00'], ['19:30'],
     ['20:00'], ['20:30'], ['21:00'], ['21:30'],
     ['22:00'], ['22:30'], ['23:00'], ['23:30'],
-    [langFile['backConfig']]
+    [langFile['backMenu']]
 ], resize_keyboard=True)
-
 
 days_menu = ReplyKeyboardMarkup([
     [langFile['actualConfigDays']],
     [langFile['remove'], langFile['add']],
-    [langFile['backConfig']]
+    [langFile['backMenu']]
 ], resize_keyboard=True)
-
 
 select_days_menu = ReplyKeyboardMarkup([
     ['sun', 'mon', 'tue', 'wed'],
     ['thu', 'fri', 'sat'],
-    [langFile['backConfig']]
+    [langFile['backMenu']]
 ], resize_keyboard=True)
 
 arrival_menu = ReplyKeyboardMarkup([["15m", "30m", "45m"]], resize_keyboard=True)
