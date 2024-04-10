@@ -4,7 +4,7 @@ from sis.bot import flex
 from sis.config import get_now_data
 from sis.lang import langFile
 from tg.bot import cancel, button_cancel
-from tg.menu import time_menu, hours_menu
+from tg.menu import time_menu, hours_menu, config_menu
 
 
 async def show_time_menu(update, context):
@@ -13,12 +13,14 @@ async def show_time_menu(update, context):
 
 
 async def show_actual_times(update, context):
-    try:
-        if update.message.text == langFile['currentStartTime']:
-            await update.message.reply_text(get_now_data('desiredStartTime'), reply_markup=time_menu)
-        else:
-            await update.message.reply_text(get_now_data('desiredEndTime'), reply_markup=time_menu)
-    finally:
+    if update.message.text == langFile['backConfig']:
+        await update.message.reply_text(langFile['selectMenuOptions'], reply_markup=config_menu)
+        return ConversationHandler.END
+    elif update.message.text == langFile['currentStartTime']:
+        await update.message.reply_text(get_now_data('desiredStartTime'), reply_markup=time_menu)
+        return 'SELECT_HOURS_JOBS'
+    else:
+        await update.message.reply_text(get_now_data('desiredEndTime'), reply_markup=time_menu)
         return 'SELECT_HOURS_JOBS'
 
 
@@ -61,6 +63,7 @@ conv_hourly_jobs = ConversationHandler(
         'SELECT_HOURS_JOBS': [
             MessageHandler(filters.Regex('^' + langFile["currentStartTime"] + '$'), show_actual_times),
             MessageHandler(filters.Regex('^' + langFile["currentEndTime"] + '$'), show_actual_times),
+            MessageHandler(filters.Regex('^' + langFile["backConfig"] + '$'), show_actual_times),
             conv_desired_start_time,
             conv_desired_end_time
         ],
