@@ -2,6 +2,10 @@ from json import load
 
 configFile = load(open('json/config.json'))
 
+def readConfigFile():
+    file = load(open('json/config.json'))
+    return file
+
 flex_data = {
     'waiting_login': False,
     'code_verifier': None,
