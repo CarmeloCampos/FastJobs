@@ -621,3 +621,5 @@ class FlexUnlimited:
                 break
             time.sleep(random.randint(3, 17))
             Log.info("Job search stopped.")
+        Log.info("Job search cycle ending...")
+        Log.info(f"Accepted {len(self.__acceptedOffers)} offers in {time.time() - self.__startTimestamp} seconds")
