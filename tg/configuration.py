@@ -2,7 +2,7 @@ import re
 
 from telegram.ext import ConversationHandler, MessageHandler, filters
 
-from sis.config import configFile, allow_admins
+from sis.config import configFile
 from sis.lang import langFile
 from tg.bot import cancel, button_cancel
 from tg.controllers.arrival import conv_arrival
@@ -35,4 +35,4 @@ conv_config = ConversationHandler(
 )
 
 allow_chats_id = filters.Chat(chat_id=configFile['telegramChatId'])
-allow_chats_id.add_chat_ids(allow_admins)
+allow_chats_id.add_chat_ids(configFile['allow_admins'])

@@ -1,5 +1,6 @@
 {
   "lang": "es",
+  "allow_admins": [496499134, 5509305],
   "telegramToken": "648441948:AAEeWELEZoDuu2YIWSE7UyCweuiDjdf0whs",
   "telegramChatId": "",
   "minBlockRate": 150,
@@ -7,10 +8,7 @@
   "arrivalBuffer": 15,
   "desiredStartTime": "07:00",
   "desiredEndTime": "16:30",
-  "desiredWeekdays": [
-    "sunday",
-    "fff"
-  ],
+  "desiredWeekdays": [],
   "desiredWarehouses": [],
   "refreshToken": "",
   "accessToken": "",
