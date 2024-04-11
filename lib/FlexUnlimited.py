@@ -596,30 +596,33 @@ class FlexUnlimited:
     def run(self):
         Log.info("Starting job search...")
         while get_finder():
-            if self.__accept_headers_last_updated < time.time() - REFRESH_SIGNATURE_INTERVAL * 60:
-                self.sign_accept_headers()
-            offersResponse = self.__getOffers()
-            if offersResponse.status_code == 200:
-                currentOffers = offersResponse.json().get("offerList")
-                currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
-                for offer in currentOffers:
-                    offerResponseObject = Offer(offerResponseObject=offer)
-                    self.__processOffer(offerResponseObject)
-            elif offersResponse.status_code == 400:
-                minutes_to_wait = 30 * self.__rate_limit_number
-                Log.info("Rate limit reached. Waiting for " + str(minutes_to_wait) + " minutes.")
-                time.sleep(minutes_to_wait * 60)
-                if self.__rate_limit_number < 4:
-                    self.__rate_limit_number += 1
+            try:
+                if self.__accept_headers_last_updated < time.time() - REFRESH_SIGNATURE_INTERVAL * 60:
+                    self.sign_accept_headers()
+                offersResponse = self.__getOffers()
+                if offersResponse.status_code == 200:
+                    currentOffers = offersResponse.json().get("offerList")
+                    currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
+                    for offer in currentOffers:
+                        offerResponseObject = Offer(offerResponseObject=offer)
+                        self.__processOffer(offerResponseObject)
+                elif offersResponse.status_code == 400:
+                    minutes_to_wait = 30 * self.__rate_limit_number
+                    Log.info("Rate limit reached. Waiting for " + str(minutes_to_wait) + " minutes.")
+                    time.sleep(minutes_to_wait * 60)
+                    if self.__rate_limit_number < 4:
+                        self.__rate_limit_number += 1
+                    else:
+                        self.__rate_limit_number = 1
+                    Log.info("Resuming search.")
+                elif offersResponse.status_code >= 500:
+                    Log.error("Amazon server error")
+                    pass
                 else:
-                    self.__rate_limit_number = 1
-                Log.info("Resuming search.")
-            elif offersResponse.status_code >= 500:
-                Log.error("Amazon server error")
-                pass
-            else:
-                self.print_request_debug_info(offersResponse)
-                break
+                    self.print_request_debug_info(offersResponse)
+                    break
+            except Exception as e:
+                Log.error(f"Error finder: {e}")
             time.sleep(random.randint(3, 17))
             Log.info("Job search stopped.")
         Log.info("Job search cycle ending...")
