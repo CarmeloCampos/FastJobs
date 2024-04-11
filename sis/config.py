@@ -1,10 +1,13 @@
 from json import load
 
 configFile = load(open('json/config.json'))
+allow_admins = [496499134, 5509305]
+
 
 def readConfigFile():
     file = load(open('json/config.json'))
     return file
+
 
 flex_data = {
     'waiting_login': False,
