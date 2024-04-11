@@ -603,6 +603,7 @@ class FlexUnlimited:
                 if offersResponse.status_code == 200:
                     currentOffers = offersResponse.json().get("offerList")
                     currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
+                    Log.info(f"Found {len(currentOffers)} offers.")
                     for offer in currentOffers:
                         offerResponseObject = Offer(offerResponseObject=offer)
                         self.__processOffer(offerResponseObject)
