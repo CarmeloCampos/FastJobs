@@ -10,13 +10,14 @@ from tg.controllers.daysjobs import conv_days_jobs
 from tg.controllers.hourly import conv_hourly_pay
 from tg.controllers.hoursjobs import conv_hourly_jobs
 from tg.menu import config_menu
+from sis.checkuser import restricted
 
-
+@restricted
 async def start_configuration(update, context):
     await update.message.reply_text(langFile['initMenuOptions'], reply_markup=config_menu)
     return 'WAITING_FOR_ANYTHING'
 
-
+@restricted
 async def any_message(update, context):
     await update.message.reply_text(langFile['initMenuOptions'], reply_markup=config_menu)
     return 'WAITING_FOR_ANYTHING'
