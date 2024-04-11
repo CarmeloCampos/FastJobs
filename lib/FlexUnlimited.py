@@ -24,8 +24,9 @@ from requests.models import Response
 from lib.Chain import Chain
 from lib.Log import Log
 from lib.Offer import Offer
-from lib.utils import send_message
+from lib.utils import msg_self
 from sis.config import configFile
+from sis.lang import langFile
 from sis.temp import get_finder
 
 APP_NAME = "com.amazon.rabbit"
@@ -517,16 +518,16 @@ class FlexUnlimited:
 
         if request.status_code == 200:
             self.__acceptedOffers.append(offer)
-            send_message(configFile['telegramChatId'], "Un bloque aceptado")
+            msg_self(langFile['blockAccept'])
             Log.info(f"Successfully accepted an offer.")
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
-            send_message(configFile['telegramChatId'], "Se requirió un captcha para aceptar un bloque.")
+            msg_self(langFile['requiredCaptcha'])
             Log.info(f"A captcha was required to accept an offer.")
             sys.exit()
         else:
-            send_message(configFile['telegramChatId'], "No se pudo aceptar un bloque. Inténtalo de nuevo.")
+            msg_self(langFile['errorAcceptBlock'])
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
 
     def __processOffer(self, offer: Offer):

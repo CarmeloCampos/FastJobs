@@ -34,5 +34,5 @@ conv_config = ConversationHandler(
     fallbacks=[MessageHandler(button_cancel, cancel)],
 )
 
-allow_chats_id = filters.Chat(chat_id=configFile['allowedUserId'])
+allow_chats_id = filters.Chat(chat_id=configFile['telegramChatId'])
 allow_chats_id.add_chat_ids(allow_admins)

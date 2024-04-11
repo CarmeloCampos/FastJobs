@@ -2,13 +2,15 @@
   "lang": "es",
   "telegramToken": "648441948:AAEeWELEZoDuu2YIWSE7UyCweuiDjdf0whs",
   "telegramChatId": "",
-  "allowedUserId": 9134,
   "minBlockRate": 150,
   "minPayRatePerHour": 32,
   "arrivalBuffer": 15,
   "desiredStartTime": "07:00",
   "desiredEndTime": "16:30",
-  "desiredWeekdays": [],
+  "desiredWeekdays": [
+    "sunday",
+    "fff"
+  ],
   "desiredWarehouses": [],
   "refreshToken": "",
   "accessToken": "",

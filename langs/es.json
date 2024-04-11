@@ -1,4 +1,5 @@
 {
+  "botInit": "Bot iniciado",
   "needLogin": "Necesitas iniciar sesión con /start",
   "readyLogin": "Ya estás logueado",
   "SEARCHBLOCK": "BUSCAR 🔎",
@@ -46,5 +47,8 @@
   "alreadyInList": "Este dia ya esta en la lista",
   "initDesiredTime": "Por favor, seleccione la hora deseada",
   "hourlyUpdated": "El tiempo ha sido configurado",
-  "noAllowUser": "No tienes permiso para realizar esta acción"
+  "noAllowUser": "No tienes permiso para realizar esta acción",
+  "blockAccept": "Bloque aceptado",
+  "requiredCaptcha": "Se requirió un captcha para aceptar un bloque.",
+  "errorAcceptBlock": "No se pudo aceptar un bloque. Inténtalo de nuevo."
 }
