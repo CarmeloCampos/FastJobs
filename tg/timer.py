@@ -1,9 +1,21 @@
 from asyncio import run
 from datetime import datetime
 
-from lib.utils import bot
+from lib.utils import get_bot
 from sis.config import configFile, get_now_data
 from sis.lang import langFile
+from sis.temp import get_finder
+
+
+async def edit_sync_msg(text):
+    bot = get_bot()
+    await bot.editMessageText(chat_id=configFile['telegramChatId'], message_id=int(get_now_data('telegramMsgId')),
+                              text=text)
+    await bot.close()
+
+
+def edit_msg(text):
+    run(edit_sync_msg(text))
 
 
 def update_time_run(start_time):
@@ -14,10 +26,4 @@ def update_time_run(start_time):
     minutes, seconds = divmod(remainder, 60)
 
     elapsed_time_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
-    run(bot.editMessageText(chat_id=configFile['telegramChatId'], message_id=int(get_now_data('telegramMsgId')),
-                            text="✅ " + elapsed_time_str))
-
-
-async def stop_time_run():
-    await bot.editMessageText(chat_id=configFile['telegramChatId'], message_id=int(get_now_data('telegramMsgId')),
-                              text="🛑 " + langFile['stopedBot'])
+    edit_msg("🛑 " + langFile['stopedBot'] if not get_finder() else "✅" + " " + elapsed_time_str)
