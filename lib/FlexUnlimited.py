@@ -5,7 +5,6 @@ import hmac
 import json
 import random
 import secrets
-import sys
 import time
 import uuid
 from datetime import datetime
@@ -102,11 +101,12 @@ class FlexUnlimited:
         self.session = requests.Session()
 
         desiredWeekdays = configFile["desiredWeekdays"]
-        self.__setDesiredWeekdays(desiredWeekdays)
+        self.set_desired_weekdays(desiredWeekdays)
         self.private_key_str = configFile["privateAttestationKey"]
 
-    def updateSelf(self, keyUpdate, valueUpdate):
-        self.options[keyUpdate] = valueUpdate
+    def updateSelf(self, keyUpdate, valueUpdate, skip_self=False):
+        if not skip_self:
+            self.options[keyUpdate] = valueUpdate
         self.__update_config_file({keyUpdate: valueUpdate})
 
     def needLogin(self):
@@ -142,16 +142,15 @@ class FlexUnlimited:
         headers["X-Flex-Client-Time"] = self.__getFlexClientTime()
         headers["X-Amzn-RequestId"] = self.__generate_uuid4()
 
-    def __setDesiredWeekdays(self, desiredWeekdays: List[str]):
+    def set_desired_weekdays(self, desired_weekdays: List[str]):
         weekdayMap = {"mon": 0, "tue": 1, "wed": 2, "thu": 3, "fri": 4, "sat": 5, "sun": 6}
-        if len(desiredWeekdays) == 0:
+        if len(desired_weekdays) == 0:
             self.desiredWeekdays = None
         else:
-            for day in desiredWeekdays:
+            for day in desired_weekdays:
                 dayAbbreviated = day[:3].lower()
                 if dayAbbreviated not in weekdayMap:
                     print("Weekday '" + day + "' is misspelled. Please correct config.json file and restart program.")
-                    exit()
                 self.desiredWeekdays.add(weekdayMap[dayAbbreviated])
             if len(self.desiredWeekdays) == 7:
                 self.desiredWeekdays = None
@@ -412,7 +411,6 @@ class FlexUnlimited:
         if response.status_code != 200:
             print(f"Error sending request to register-attestation. Status code: {response.status_code}")
             self.print_request_debug_info(response)
-            sys.exit()
         response_json = response.json()
         key_id: str = response_json.get('keyId')
         key_id_expiration: int = response_json.get('expiration', 0)
@@ -431,11 +429,9 @@ class FlexUnlimited:
                 configFile.truncate()
         except KeyError as nullKey:
             Log.error(f'{nullKey} was not set. Please setup FlexUnlimited as described in the README.')
-            sys.exit()
         except FileNotFoundError:
             Log.error(
                 "Config file not found. Ensure a properly formatted 'config.json' file exists in the root directory.")
-            sys.exit()
 
     def __getEligibleServiceAreas(self):
         self.__updateFlexHeaders(self.__requestHeaders)
@@ -525,7 +521,6 @@ class FlexUnlimited:
         elif request.status_code == 307:
             msg_self(langFile['requiredCaptcha'])
             Log.info(f"A captcha was required to accept an offer.")
-            sys.exit()
         else:
             msg_self(langFile['errorAcceptBlock'])
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")

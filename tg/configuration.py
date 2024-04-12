@@ -1,4 +1,4 @@
-import re
+from re import escape
 
 from telegram.ext import ConversationHandler, MessageHandler, filters
 
@@ -26,11 +26,12 @@ async def any_message(update, context):
 
 conv_config = ConversationHandler(
     entry_points=[
-        MessageHandler(filters.Regex('^' + re.escape(langFile["CONFIGURATIONS"]) + '$'), start_configuration)
+        MessageHandler(filters.Regex('^' + escape(langFile["CONFIGURATIONS"]) + '$'), start_configuration)
     ],
     states={
         'WAITING_FOR_ANYTHING': [conv_hourly_pay, conv_min_bloque, conv_arrival, conv_days_jobs, conv_hourly_jobs,
-                                 MessageHandler(filters.Regex('^' + langFile["showAllDataConfig"] + '$'), send_actual_config_info),
+                                 MessageHandler(filters.Regex('^' + escape(langFile["showAllDataConfig"]) + '$'),
+                                                send_actual_config_info),
                                  MessageHandler(filters.TEXT & ~button_cancel, any_message)],
     },
     fallbacks=[MessageHandler(button_cancel, cancel)],

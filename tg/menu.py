@@ -8,8 +8,9 @@ main_menu = ReplyKeyboardMarkup([
 ], resize_keyboard=True)
 
 config_menu = ReplyKeyboardMarkup([
+    [langFile['showAllDataConfig']],
     [langFile['hourlyPay'], langFile['blockPay'], langFile['arrivalBuffer']],
-    [langFile['selectDays'], langFile['selectHours'], langFile['showAllDataConfig']],
+    [langFile['selectDays'], langFile['selectHours']],
     [langFile['backMenu']]
 ], resize_keyboard=True)
 
@@ -42,8 +43,8 @@ days_menu = ReplyKeyboardMarkup([
 ], resize_keyboard=True)
 
 select_days_menu = ReplyKeyboardMarkup([
-    ['sunday', 'monday', 'tuesday', 'wednesday'],
-    ['thursday', 'friday', 'saturday'],
+    ['Monday', 'Tuesday', 'Wednesday'],
+    ['Thursday', 'Friday', 'Saturday', 'Sunday'],
     [langFile['backSelectDays']]
 ], resize_keyboard=True)
 

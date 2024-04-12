@@ -11,9 +11,7 @@
   "arrivalBuffer": 15,
   "desiredStartTime": "07:00",
   "desiredEndTime": "16:30",
-  "desiredWeekdays": [
-    "sunday"
-  ],
+  "desiredWeekdays": [],
   "desiredWarehouses": [],
   "refreshToken": "",
   "accessToken": "",

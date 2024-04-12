@@ -28,7 +28,7 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('^' + langFile["STOPSEARCH"] + '$'), stop_search))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
-    msg_self(langFile['botInit'])
+    msg_self(langFile['botInit'] + ' /start')
 
 
 if __name__ == "__main__":

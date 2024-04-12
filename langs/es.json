@@ -4,7 +4,7 @@
   "readyLogin": "Ya estás logueado",
   "SEARCHBLOCK": "BUSCAR 🔎",
   "STOPSEARCH": "DETENER BÚSQUEDA 🛑",
-  "CONFIGURATIONS": "Configuraciones ⚙️",
+  "CONFIGURATIONS": "CONFIGURACIONES ⚙️",
   "showAllDataConfig": "✍️ Mostrar datos configurados",
   "currentData": "✍️ Datos actuales ✍️",
   "loggedin": "Conectado",
@@ -53,5 +53,7 @@
   "noAllowUser": "No tienes permiso para realizar esta acción",
   "blockAccept": "Bloque aceptado",
   "requiredCaptcha": "Se requirió un captcha para aceptar un bloque.",
-  "errorAcceptBlock": "No se pudo aceptar un bloque. Inténtalo de nuevo."
+  "errorAcceptBlock": "No se pudo aceptar un bloque. Inténtalo de nuevo.",
+  "minutes": "Minutos",
+  "allDays": "Todos los días"
 }
