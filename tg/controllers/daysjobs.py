@@ -27,7 +27,7 @@ async def show_actual_days(update, context):
 
 
 async def clear_actual_days(update, context):
-    flex.updateSelf('desiredWeekdays', [])
+    flex.updateSelf('desiredWeekdays', [], skip_self=True)
     await update.message.reply_text(langFile['clearDesiredWeekdays'], reply_markup=days_menu)
 
 
