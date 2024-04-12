@@ -5,6 +5,8 @@
   "SEARCHBLOCK": "BUSCAR 🔎",
   "STOPSEARCH": "DETENER BÚSQUEDA 🛑",
   "CONFIGURATIONS": "Configuraciones ⚙️",
+  "showAllDataConfig": "✍️ Mostrar datos configurados",
+  "currentData": "✍️ Datos actuales ✍️",
   "loggedin": "Conectado",
   "errorLogin": "No has podido iniciar sesión",
   "noNeedLogin": "No necesitas iniciar sesión",

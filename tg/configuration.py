@@ -10,6 +10,7 @@ from tg.controllers.block import conv_min_bloque
 from tg.controllers.daysjobs import conv_days_jobs
 from tg.controllers.hourly import conv_hourly_pay
 from tg.controllers.hoursjobs import conv_hourly_jobs
+from tg.controllers.showinfo import send_actual_config_info
 from tg.menu import config_menu
 
 
@@ -29,6 +30,7 @@ conv_config = ConversationHandler(
     ],
     states={
         'WAITING_FOR_ANYTHING': [conv_hourly_pay, conv_min_bloque, conv_arrival, conv_days_jobs, conv_hourly_jobs,
+                                 MessageHandler(filters.Regex('^' + langFile["showAllDataConfig"] + '$'), send_actual_config_info),
                                  MessageHandler(filters.TEXT & ~button_cancel, any_message)],
     },
     fallbacks=[MessageHandler(button_cancel, cancel)],
