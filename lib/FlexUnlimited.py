@@ -515,7 +515,7 @@ class FlexUnlimited:
 
         if request.status_code == 200:
             self.__acceptedOffers.append(offer)
-            msg_self(langFile['blockAccept'])
+            msg_self(offer.toString())
             Log.info(f"Successfully accepted an offer.")
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
