@@ -55,5 +55,6 @@
   "requiredCaptcha": "Se requirió un captcha para aceptar un bloque.",
   "errorAcceptBlock": "No se pudo aceptar un bloque. Inténtalo de nuevo.",
   "minutes": "Minutos",
-  "allDays": "Todos los días"
+  "allDays": "Todos los días",
+  "stopedBot": "Bot detenido"
 }

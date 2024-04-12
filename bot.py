@@ -1,7 +1,6 @@
 from telegram import Update
 from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, filters
 
-from lib.utils import msg_self
 from sis.lang import langFile
 from tg.blocks import search, stop_search
 from tg.bot import application, cancel
@@ -28,7 +27,6 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('^' + langFile["STOPSEARCH"] + '$'), stop_search))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
-    msg_self(langFile['botInit'] + ' /start')
 
 
 if __name__ == "__main__":

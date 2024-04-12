@@ -1,8 +1,7 @@
 from json import load
 
-configFile = load(open('json/config.json'))
-
-
+nameFile = 'json/config.json'
+configFile = load(open(nameFile))
 
 flex_data = {
     'waiting_login': False,
@@ -21,5 +20,5 @@ def get_flex_data(key):
 
 
 def get_now_data(key):
-    nowFile = load(open('json/config.json'))
+    nowFile = load(open(nameFile))
     return nowFile.get(key)

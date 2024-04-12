@@ -24,9 +24,10 @@ from lib.Chain import Chain
 from lib.Log import Log
 from lib.Offer import Offer
 from lib.utils import msg_self
-from sis.config import configFile
+from sis.config import configFile, nameFile
 from sis.lang import langFile
 from sis.temp import get_finder
+from tg.timer import update_time_run
 
 APP_NAME = "com.amazon.rabbit"
 APP_VERSION = configFile['APP_VERSION']
@@ -420,7 +421,7 @@ class FlexUnlimited:
     @staticmethod
     def __update_config_file(key_pairs: dict):
         try:
-            with open("json/config.json", "r+") as configFile:
+            with open(nameFile, "r+") as configFile:
                 config = json.load(configFile)
                 for key in key_pairs:
                     config[key] = key_pairs[key]
@@ -590,6 +591,7 @@ class FlexUnlimited:
 
     def run(self):
         Log.info("Starting job search...")
+        startTimeUnix = datetime.now()
         while get_finder():
             try:
                 if self.__accept_headers_last_updated < time.time() - REFRESH_SIGNATURE_INTERVAL * 60:
@@ -621,5 +623,9 @@ class FlexUnlimited:
                 Log.error(f"Error finder: {e}")
             time.sleep(random.randint(3, 17))
             Log.info("Job search stopped.")
+            try:
+                update_time_run(startTimeUnix)
+            except Exception as etg:
+                Log.error(f"Error updating time: {etg}")
         Log.info("Job search cycle ending...")
         Log.info(f"Accepted {len(self.__acceptedOffers)} offers in {time.time() - self.__startTimestamp} seconds")

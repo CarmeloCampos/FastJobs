@@ -4,9 +4,10 @@ from telegram import Bot
 
 from sis.config import configFile
 
+bot = Bot(token=configFile['telegramToken'])
+
 
 async def send_async_message(chat_id, text):
-    bot = Bot(token=configFile['telegramToken'])
     await bot.send_message(chat_id=chat_id, text=text)
 
 
