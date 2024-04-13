@@ -21,7 +21,7 @@ async def show_actual_days(update, context):
             await update.message.reply_text((", ".join(get_now_data('desiredWeekdays')).upper()),
                                             reply_markup=days_menu)
         elif len(get_now_data('desiredWeekdays')) == 0:
-            await update.message.reply_text(langFile['noConfigDays'], reply_markup=days_menu)
+            await update.message.reply_text(langFile['allDays'], reply_markup=days_menu)
     finally:
         return 'SELECT_DAYS_JOBS'
 
