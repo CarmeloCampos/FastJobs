@@ -520,6 +520,8 @@ class FlexUnlimited:
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
+            time_unix_now = time.time()
+            json.dump(offer, open("logs/{}.json".format(time_unix_now), "w"), indent=2)
             msg_self(langFile['requiredCaptcha'])
             Log.info(f"A captcha was required to accept an offer.")
         else:
@@ -626,6 +628,6 @@ class FlexUnlimited:
             try:
                 update_time_run(startTimeUnix)
             except Exception as etg:
-                Log.error(f"Error updating time: {etg}")
+                Log.error(f"Time tg")
         Log.info("Job search cycle ending...")
         Log.info(f"Accepted {len(self.__acceptedOffers)} offers in {time.time() - self.__startTimestamp} seconds")
