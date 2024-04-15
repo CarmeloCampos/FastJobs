@@ -520,8 +520,6 @@ class FlexUnlimited:
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
-            time_unix_now = time.time()
-            json.dump(offer, open("logs/{}.json".format(time_unix_now), "w"), indent=2)
             msg_self(langFile['requiredCaptcha'])
             Log.info(f"A captcha was required to accept an offer.")
         else:
@@ -602,6 +600,8 @@ class FlexUnlimited:
                 if offersResponse.status_code == 200:
                     currentOffers = offersResponse.json().get("offerList")
                     currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
+                    time_unix_now = time.time()
+                    json.dump(currentOffers, open("logs/{}.json".format(time_unix_now), "w"), indent=2)
                     Log.info(f"Found {len(currentOffers)} offers.")
                     for offer in currentOffers:
                         offerResponseObject = Offer(offerResponseObject=offer)
