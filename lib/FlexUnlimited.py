@@ -490,7 +490,7 @@ class FlexUnlimited:
                 json=self.__offersRequestBody)
         return response
 
-    def __acceptOffer(self, offer: Offer):
+    def __acceptOffer(self, offer: Offer, captcha=False):
         self.__updateFlexHeaders(self.__acceptHeaders)
         request = self.session.post(FlexUnlimited.routes.get("AcceptOffer"), headers=self.__acceptHeaders,
                                     json={"offerId": offer.id})
@@ -601,7 +601,7 @@ class FlexUnlimited:
                     currentOffers = offersResponse.json().get("offerList")
                     currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
                     time_unix_now = time.time()
-                    json.dump(currentOffers, open("logs/{}.json".format(time_unix_now), "w"), indent=2)
+                    json.dump(currentOffers, open(str(time_unix_now) + ".json", "w"), indent=6)
                     Log.info(f"Found {len(currentOffers)} offers.")
                     for offer in currentOffers:
                         offerResponseObject = Offer(offerResponseObject=offer)
@@ -628,6 +628,7 @@ class FlexUnlimited:
             try:
                 update_time_run(startTimeUnix)
             except Exception as etg:
-                Log.error(f"Time tg")
+                time.time()
+                # Log.error(f"Time tg")
         Log.info("Job search cycle ending...")
         Log.info(f"Accepted {len(self.__acceptedOffers)} offers in {time.time() - self.__startTimestamp} seconds")
