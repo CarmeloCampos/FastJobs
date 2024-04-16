@@ -19,7 +19,8 @@ class Solver(object):
         self.driver = None
 
     def set(self):
-        self.driver = webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=self.options)
+        if self.driver is None:
+            self.driver = webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=self.options)
 
     def prepare(self):
         self.driver.get('chrome-extension://pgojnojmmhpofjgdmaebadhbocahppod/www/index.html#/popup')
