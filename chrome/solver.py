@@ -45,4 +45,7 @@ class Solver(object):
         payload = json.dumps({'challengeToken': decoded_session_token})
         reqcaptcha = request("POST", "https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header,
                              data=payload)
-        print(reqcaptcha.text)
+        if reqcaptcha.status_code == 200:
+            print('Captcha Solved')
+        else:
+            print('Captcha not solved')
