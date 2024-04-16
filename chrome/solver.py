@@ -41,7 +41,7 @@ class Solver(object):
         self.driver.get('https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2'
                         '&returnTo=https://www.amazon.com&headerFooter=false')
         self.driver.save_screenshot('json/amazon.png')
-        sleep(randint(11, 17))
+        sleep(randint(17, 37))
         self.driver.save_screenshot('json/amazon2.png')
         parsed_url = urlparse(self.driver.current_url)
         query_params = parse_qs(parsed_url.query)
