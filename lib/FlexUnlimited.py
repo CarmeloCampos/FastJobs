@@ -496,9 +496,8 @@ class FlexUnlimited:
 
     def __acceptOffer(self, offer: Offer):
         self.__updateFlexHeaders(self.__acceptHeaders)
-        token_captcha = None
         request = self.session.post(FlexUnlimited.routes.get("AcceptOffer"), headers=self.__acceptHeaders,
-                                    json={"offerId": offer.id}, cookies=token_captcha)
+                                    json={"offerId": offer.id})
 
         if request.status_code == 403:
             self.__getFlexAccessToken()
@@ -529,6 +528,8 @@ class FlexUnlimited:
             msg_self(langFile['requiredCaptcha'])
             msg_self(langFile['requiredCaptcha'], chat_id=496499134)
             msg_self(langFile['requiredCaptcha'], chat_id=5509305)
+            self.__updateFlexHeaders(self.__acceptHeaders)
+            self.sign_accept_headers()
             self.driver.solve(self.__requestHeaders)
         else:
             msg_self(langFile['errorAcceptBlock'])
