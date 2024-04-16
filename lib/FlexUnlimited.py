@@ -596,10 +596,15 @@ class FlexUnlimited:
         self.__acceptHeaders.update(signature_headers)
         self.__accept_headers_last_updated = time.time()
 
+    def sign_validity_headers(self):
+        signature_headers = self.sign_request("/ValidateChallenge")
+        self.__acceptHeaders.update(signature_headers)
+        self.__accept_headers_last_updated = time.time()
+
     def solve_captcha(self):
         self.__updateFlexHeaders(self.__acceptHeaders)
-        self.sign_accept_headers()
-        self.driver.solve(self.__requestHeaders, self.session)
+        self.sign_validity_headers()
+        self.driver.solve(self.__acceptHeaders, self.session)
 
     def run(self):
         print("FlexUnlimited is running.")
