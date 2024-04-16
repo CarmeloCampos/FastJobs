@@ -20,6 +20,7 @@ from pbkdf2 import PBKDF2
 from prettytable import PrettyTable
 from requests.models import Response
 
+from chrome.solver import Solver
 from lib.Chain import Chain
 from lib.Log import Log
 from lib.Offer import Offer
@@ -104,6 +105,7 @@ class FlexUnlimited:
         desiredWeekdays = configFile["desiredWeekdays"]
         self.set_desired_weekdays(desiredWeekdays)
         self.private_key_str = configFile["privateAttestationKey"]
+        self.driver = Solver(FlexUnlimited.allHeaders.get("FlexCapacityRequest")['User-Agent'])
 
     def updateSelf(self, keyUpdate, valueUpdate, skip_self=False):
         if not skip_self:
@@ -111,6 +113,7 @@ class FlexUnlimited:
         self.__update_config_file({keyUpdate: valueUpdate})
 
     def needLogin(self):
+        self.driver.set()
         trueLogin = any(
             not x for x in [self.refreshToken, self.android_device_id, self.device_serial, self.flex_instance_id])
 
@@ -135,6 +138,7 @@ class FlexUnlimited:
             },
             "serviceAreaIds": self.serviceAreaIds
         }
+        self.driver.prepare()
 
         if not self.key_id or self.key_id_expiration is None or (
                 int(time.time() * 1000) > int(self.key_id_expiration)): self.get_key_id()
@@ -490,10 +494,11 @@ class FlexUnlimited:
                 json=self.__offersRequestBody)
         return response
 
-    def __acceptOffer(self, offer: Offer, captcha=False):
+    def __acceptOffer(self, offer: Offer):
         self.__updateFlexHeaders(self.__acceptHeaders)
+        token_captcha = None
         request = self.session.post(FlexUnlimited.routes.get("AcceptOffer"), headers=self.__acceptHeaders,
-                                    json={"offerId": offer.id})
+                                    json={"offerId": offer.id}, cookies=token_captcha)
 
         if request.status_code == 403:
             self.__getFlexAccessToken()
@@ -520,8 +525,8 @@ class FlexUnlimited:
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
-            msg_self(langFile['requiredCaptcha'])
             Log.info(f"A captcha was required to accept an offer.")
+            self.driver.solve(self.__requestHeaders)
         else:
             msg_self(langFile['errorAcceptBlock'])
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
@@ -600,8 +605,6 @@ class FlexUnlimited:
                 if offersResponse.status_code == 200:
                     currentOffers = offersResponse.json().get("offerList")
                     currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
-                    time_unix_now = time.time()
-                    json.dump(currentOffers, open("logs/" + str(time_unix_now) + ".json", "w"), indent=6)
                     Log.info(f"Found {len(currentOffers)} offers.")
                     for offer in currentOffers:
                         offerResponseObject = Offer(offerResponseObject=offer)

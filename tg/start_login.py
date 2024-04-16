@@ -7,7 +7,7 @@ from sis.lang import langFile
 from tg.menu import main_menu
 
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
     if flex.needLogin():
         await update.message.reply_text(langFile['needLogin'])
         link, verifier = flex.generate_challenge_link()
@@ -16,7 +16,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         await update.message.reply_text(langFile['toCancel'])
         set_flex_data('waiting_login', True)
         set_flex_data('code_verifier', verifier)
-        return 0
+        return 'LOGIN'
     else:
         await update.message.reply_text(langFile['readyLogin'], reply_markup=main_menu)
         set_flex_data('ready_login', True)

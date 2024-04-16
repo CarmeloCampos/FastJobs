@@ -1,8 +1,28 @@
 version: "3.9"
 services:
+  chromelocal:
+    image: selenium/standalone-chrome:latest
+    shm_size: 2gb
+    expose:
+      - "4444:4444"
+    networks:
+      fastnet:
+        ipv4_address: 192.168.50.3
   fastjobs:
     build: .
     container_name: fastrun
     volumes:
       - ./json:/usr/src/app/json
+    depends_on:
+      - chromelocal
     restart: unless-stopped
+    networks:
+      fastnet:
+        ipv4_address: 192.168.50.4
+
+networks:
+  fastnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.50.0/24
