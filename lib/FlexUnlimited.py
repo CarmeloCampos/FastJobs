@@ -628,7 +628,7 @@ class FlexUnlimited:
                     break
             except Exception as e:
                 Log.error(f"Error finder: {e}")
-            time.sleep(random.randint(3, 17))
+            time.sleep(random.randint(13, 47))
             Log.info("Job search stopped.")
             try:
                 update_time_run(startTimeUnix)
