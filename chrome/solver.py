@@ -41,7 +41,7 @@ class Solver(object):
         self.driver.get('https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2'
                         '&returnTo=https://www.amazon.com&headerFooter=false')
         self.driver.save_screenshot('json/amazon.png')
-        sleep(randint(20, 40))
+        sleep(randint(11, 17))
         self.driver.save_screenshot('json/amazon2.png')
         parsed_url = urlparse(self.driver.current_url)
         decoded_session_token = parse_qs(parsed_url.query)['sessionToken'][0]
@@ -49,6 +49,7 @@ class Solver(object):
         payload = json.dumps({'challengeToken': decoded_session_token})
         reqcaptcha = request("POST", "https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header,
                              data=payload)
+        print(reqcaptcha.status_code, reqcaptcha.text)
         if reqcaptcha.status_code == 200:
             print('Captcha Solved')
         else:
