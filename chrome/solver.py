@@ -20,7 +20,7 @@ class Solver(object):
 
     def set(self):
         if self.driver is None:
-            self.driver = webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=self.options)
+            self.driver = webdriver.Remote(command_executor="http://localhost:4444/wd/hub", options=self.options)
 
     def prepare(self):
         self.driver.get('chrome-extension://pgojnojmmhpofjgdmaebadhbocahppod/www/index.html#/popup')
@@ -33,12 +33,16 @@ class Solver(object):
         sleep(1)
         button_save = self.driver.find_element(By.CLASS_NAME, 'text-balance')
         button_save.click()
+        sleep(1)
+        self.driver.save_screenshot('captcha.png')
 
     def solve(self, header):
         sleep(randint(5, 7))
         self.driver.get('https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2'
                         '&returnTo=https://www.amazon.com&headerFooter=false')
-        sleep(11)
+        self.driver.save_screenshot('amazon.png')
+        sleep(randint(20, 40))
+        self.driver.save_screenshot('amazon2.png')
         parsed_url = urlparse(self.driver.current_url)
         decoded_session_token = parse_qs(parsed_url.query)['sessionToken'][0]
 

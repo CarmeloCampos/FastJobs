@@ -525,8 +525,6 @@ class FlexUnlimited:
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
-            msg_self("SALIO UN CAPTCHA", chat_id=496499134)
-            msg_self("SALIO UN CAPTCHA", chat_id=5509305)
             Log.info(f"A captcha was required to accept an offer.")
             self.driver.solve(self.__requestHeaders)
         else:
@@ -597,6 +595,8 @@ class FlexUnlimited:
         self.__accept_headers_last_updated = time.time()
 
     def run(self):
+        print("FlexUnlimited is running.")
+        self.driver.solve(self.__requestHeaders)
         Log.info("Starting job search...")
         startTimeUnix = datetime.now()
         while get_finder():

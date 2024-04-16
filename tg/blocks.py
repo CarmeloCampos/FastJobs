@@ -32,6 +32,7 @@ async def search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def stop_search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    print("stop_search")
     if get_finder():
         update_finding(False)
         await update.message.reply_text(langFile['searchStopped'])
