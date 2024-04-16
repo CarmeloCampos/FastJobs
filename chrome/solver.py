@@ -46,6 +46,7 @@ class Solver(object):
         parsed_url = urlparse(self.driver.current_url)
         query_params = parse_qs(parsed_url.query)
         session_token = query_params.get('sessionToken', [None])[0]
+        print(session_token)
         decoded_session_token = unquote(session_token)
 
         payload = json.dumps({'challengeToken': decoded_session_token})
