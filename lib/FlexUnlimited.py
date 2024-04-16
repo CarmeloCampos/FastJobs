@@ -525,10 +525,10 @@ class FlexUnlimited:
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
-            Log.info(f"A captcha was required to accept an offer.")
-            self.driver.solve(self.__requestHeaders)
             msg_self("SALIO UN CAPTCHA", chat_id=496499134)
             msg_self("SALIO UN CAPTCHA", chat_id=5509305)
+            Log.info(f"A captcha was required to accept an offer.")
+            self.driver.solve(self.__requestHeaders)
         else:
             msg_self(langFile['errorAcceptBlock'])
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
