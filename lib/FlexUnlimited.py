@@ -528,9 +528,7 @@ class FlexUnlimited:
             msg_self(langFile['requiredCaptcha'])
             msg_self(langFile['requiredCaptcha'], chat_id=496499134)
             msg_self(langFile['requiredCaptcha'], chat_id=5509305)
-            self.__updateFlexHeaders(self.__acceptHeaders)
-            self.sign_accept_headers()
-            self.driver.solve(self.__requestHeaders)
+            self.solve_captcha()
         else:
             msg_self(langFile['errorAcceptBlock'])
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
@@ -598,9 +596,14 @@ class FlexUnlimited:
         self.__acceptHeaders.update(signature_headers)
         self.__accept_headers_last_updated = time.time()
 
+    def solve_captcha(self):
+        self.__updateFlexHeaders(self.__acceptHeaders)
+        self.sign_accept_headers()
+        self.driver.solve(self.__requestHeaders)
+
     def run(self):
         print("FlexUnlimited is running.")
-        self.driver.solve(self.__requestHeaders)
+        self.solve_captcha()
         Log.info("Starting job search...")
         startTimeUnix = datetime.now()
         while get_finder():
