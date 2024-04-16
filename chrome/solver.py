@@ -1,9 +1,7 @@
-import json
 from random import randint
 from time import sleep
 from urllib.parse import urlparse, parse_qs, unquote
 
-from requests import request
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -36,7 +34,7 @@ class Solver(object):
         sleep(1)
         self.driver.save_screenshot('json/captcha.png')
 
-    def solve(self, header):
+    def solve(self, header, session):
         sleep(randint(5, 7))
         self.driver.get('https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2'
                         '&returnTo=https://www.amazon.com&headerFooter=false')
@@ -49,9 +47,8 @@ class Solver(object):
         print(session_token)
         decoded_session_token = unquote(session_token)
 
-        payload = json.dumps({'challengeToken': decoded_session_token})
-        reqcaptcha = request("POST", "https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header,
-                             data=payload)
+        payload = {'challengeToken': decoded_session_token}
+        reqcaptcha = session.post("https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header, json=payload)
         print(reqcaptcha.status_code, reqcaptcha.text)
         if reqcaptcha.status_code == 200:
             print('Captcha Solved')

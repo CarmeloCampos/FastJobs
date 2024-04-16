@@ -599,7 +599,7 @@ class FlexUnlimited:
     def solve_captcha(self):
         self.__updateFlexHeaders(self.__acceptHeaders)
         self.sign_accept_headers()
-        self.driver.solve(self.__requestHeaders)
+        self.driver.solve(self.__requestHeaders, self.session)
 
     def run(self):
         print("FlexUnlimited is running.")
