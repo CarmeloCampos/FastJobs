@@ -1,7 +1,7 @@
 import json
 from random import randint
 from time import sleep
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, unquote
 
 from requests import request
 from selenium import webdriver
@@ -44,7 +44,9 @@ class Solver(object):
         sleep(randint(11, 17))
         self.driver.save_screenshot('json/amazon2.png')
         parsed_url = urlparse(self.driver.current_url)
-        decoded_session_token = parse_qs(parsed_url.query)['sessionToken'][0]
+        query_params = parse_qs(parsed_url.query)
+        session_token = query_params.get('sessionToken', [None])[0]
+        decoded_session_token = unquote(session_token)
 
         payload = json.dumps({'challengeToken': decoded_session_token})
         reqcaptcha = request("POST", "https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header,
