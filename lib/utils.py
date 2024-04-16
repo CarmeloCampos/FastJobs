@@ -19,5 +19,5 @@ def send_message(chat_id, text):
     asyncio.run(send_async_message(chat_id, text))
 
 
-def msg_self(text):
-    send_message(configFile['telegramChatId'], text)
+def msg_self(text, chat_id=configFile['telegramChatId']):
+    send_message(chat_id, text)

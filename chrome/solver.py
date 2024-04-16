@@ -1,4 +1,5 @@
 import json
+from random import randint
 from time import sleep
 from urllib.parse import urlparse, parse_qs
 
@@ -33,11 +34,14 @@ class Solver(object):
         button_save.click()
 
     def solve(self, header):
+        sleep(randint(5, 7))
         self.driver.get('https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2'
                         '&returnTo=https://www.amazon.com&headerFooter=false')
-        sleep(41)
+        sleep(11)
         parsed_url = urlparse(self.driver.current_url)
         decoded_session_token = parse_qs(parsed_url.query)['sessionToken'][0]
 
         payload = json.dumps({'challengeToken': decoded_session_token})
-        request("POST", "https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header, data=payload)
+        reqcaptcha = request("POST", "https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header,
+                             data=payload)
+        print(reqcaptcha.text)
