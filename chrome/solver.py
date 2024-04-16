@@ -9,10 +9,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 class Solver(object):
-    def __init__(self, header):
+    def __init__(self, user_agent):
         options = webdriver.ChromeOptions()
         options.add_extension("Captcha-Solver-Auto-captcha-solving-service.crx")
-        options.add_argument(f"--user-agent={header}")
+        options.add_argument(f"--user-agent={user_agent}")
         self.options = options
         self.driver = None
 
@@ -34,13 +34,19 @@ class Solver(object):
         sleep(1)
         self.driver.save_screenshot('json/captcha.png')
 
+    def intent_solve(self):
+        url_solve = ('https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2'
+                     '&returnTo=https://www.amazon.com&headerFooter=false')
+        self.driver.get(url_solve)
+        sleep(randint(8, 17))
+        if 'challenge' in self.driver.current_url:
+            return self.intent_solve()
+        else:
+            return True
+
     def solve(self, header, session):
         sleep(randint(5, 7))
-        self.driver.get('https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2'
-                        '&returnTo=https://www.amazon.com&headerFooter=false')
-        self.driver.save_screenshot('json/amazon.png')
-        sleep(randint(17, 37))
-        self.driver.save_screenshot('json/amazon2.png')
+        self.intent_solve()
         parsed_url = urlparse(self.driver.current_url)
         query_params = parse_qs(parsed_url.query)
         session_token = query_params.get('sessionToken', [None])[0]
