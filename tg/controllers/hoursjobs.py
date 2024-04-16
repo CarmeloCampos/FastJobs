@@ -25,6 +25,10 @@ async def show_actual_times(update, context):
 
 
 async def update_actual_times(update, type_time):
+    if (type_time == 'desiredStartTime' and get_now_data('desiredEndTime') == update.message.text or
+            type_time == 'desiredEndTime' and get_now_data('desiredStartTime') == update.message.text):
+        await update.message.reply_text(langFile['timeInvalid'], reply_markup=time_menu)
+        return ConversationHandler.END
     flex.updateSelf(type_time, update.message.text)
     await update.message.reply_text(langFile['hourlyUpdated'], reply_markup=time_menu)
     return ConversationHandler.END
@@ -35,7 +39,7 @@ async def init_desired_start_time(update, waiting_type):
     return waiting_type
 
 
-regex_time = filters.Regex(r'([01]?[0-9]|2[0-3]):([0-5][0-9])')
+regex_time = filters.Regex(r'^([01]?[0-9]|2[0-3]):([0-5][0-9])$')
 
 conv_desired_start_time = ConversationHandler(
     entry_points=[MessageHandler(filters.Regex('^' + langFile["desiredStartTime"] + '$'),

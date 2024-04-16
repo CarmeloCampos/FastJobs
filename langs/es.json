@@ -30,6 +30,7 @@
   "desiredStartTime": "✅ Hora de inicio deseada",
   "currentEndTime": "☑️ Hora de finalización actual 🤚",
   "desiredEndTime": "⌛️ Hora de finalización deseada",
+  "timeInvalid": "Hora inválida, hora de inicio y final iguales, seleccione de nuevo la hora que desea editar",
   "backMenu": "Volver al menu principal",
   "backConfig": "Volver al panel de configuraciones",
   "backSelectDays": "Volver al menu configurar días",
