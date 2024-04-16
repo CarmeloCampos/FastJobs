@@ -34,15 +34,15 @@ class Solver(object):
         button_save = self.driver.find_element(By.CLASS_NAME, 'text-balance')
         button_save.click()
         sleep(1)
-        self.driver.save_screenshot('captcha.png')
+        self.driver.save_screenshot('json/captcha.png')
 
     def solve(self, header):
         sleep(randint(5, 7))
         self.driver.get('https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2'
                         '&returnTo=https://www.amazon.com&headerFooter=false')
-        self.driver.save_screenshot('amazon.png')
+        self.driver.save_screenshot('json/amazon.png')
         sleep(randint(20, 40))
-        self.driver.save_screenshot('amazon2.png')
+        self.driver.save_screenshot('json/amazon2.png')
         parsed_url = urlparse(self.driver.current_url)
         decoded_session_token = parse_qs(parsed_url.query)['sessionToken'][0]
 
