@@ -25,8 +25,8 @@ async def search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             return
         await update.message.reply_text(langFile['searching'])
         await first_run()
-        get_fresh_finder().start()
         update_finding(True)
+        get_fresh_finder().start()
     else:
         await update.message.reply_text(langFile['needLogin'])
 
