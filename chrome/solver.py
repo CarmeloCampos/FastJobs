@@ -1,4 +1,3 @@
-import json
 from random import randint
 from time import sleep
 from urllib.parse import urlparse, parse_qs, unquote
@@ -31,20 +30,18 @@ class Solver(object):
         button_save.click()
         sleep(1)
 
-    def intent_solve(self):
-        url_solve = ('https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2'
-                     '&returnTo=https://www.amazon.com&headerFooter=false')
-        self.driver.get(url_solve)
+    def intent_solve(self, url_captcha):
+        self.driver.get(url_captcha)
         sleep(randint(8, 17))
-        if 'challenge' in self.driver.current_url:
-            print("other")
-            return self.intent_solve()
-        else:
+        if 'uniqueValidationId' in self.driver.current_url:
             return True
+        else:
+            print("other")
+            return self.intent_solve(url_captcha)
 
-    def solve(self):
+    def solve(self, url_captcha):
         sleep(randint(5, 7))
-        self.intent_solve()
+        self.intent_solve(url_captcha)
         print("nice")
         parsed_url = urlparse(self.driver.current_url)
         query_params = parse_qs(parsed_url.query)
@@ -52,8 +49,8 @@ class Solver(object):
         self.token = unquote(session_token)
 
     def run(self, session, header):
-        payload = json.dumps({'challengeToken': self.token})
-        reqcaptcha = session.post("https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header, data=payload)
+        payload = {'challengeToken': self.token}
+        reqcaptcha = session.post("https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header, json=payload)
         print(payload, reqcaptcha.status_code, reqcaptcha.text)
         if reqcaptcha.status_code == 200:
             print('Captcha Solved')
