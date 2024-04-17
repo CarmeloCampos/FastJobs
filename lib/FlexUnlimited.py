@@ -113,7 +113,6 @@ class FlexUnlimited:
         self.__update_config_file({keyUpdate: valueUpdate})
 
     def needLogin(self):
-        self.driver.set()
         trueLogin = any(
             not x for x in [self.refreshToken, self.android_device_id, self.device_serial, self.flex_instance_id])
 
@@ -528,7 +527,8 @@ class FlexUnlimited:
             msg_self(langFile['requiredCaptcha'])
             msg_self(langFile['requiredCaptcha'], chat_id=496499134)
             msg_self(langFile['requiredCaptcha'], chat_id=5509305)
-            self.solve_captcha()
+            json.dump(request.json(), open("json/{}_captcha.json".format(str(time.time())), "w"), indent=2)
+            # self.solve_captcha()
         else:
             msg_self(langFile['errorAcceptBlock'])
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
@@ -597,18 +597,19 @@ class FlexUnlimited:
         self.__accept_headers_last_updated = time.time()
 
     def sign_validity_headers(self):
+        self.__updateFlexHeaders(self.__acceptHeaders)
         signature_headers = self.sign_request("/ValidateChallenge")
         self.__acceptHeaders.update(signature_headers)
         self.__accept_headers_last_updated = time.time()
+        return self.__acceptHeaders
 
     def solve_captcha(self):
-        self.__updateFlexHeaders(self.__acceptHeaders)
-        self.sign_validity_headers()
-        self.driver.solve(self.__acceptHeaders, self.session)
+        self.driver.solve()
+        self.driver.run(self.session, self.sign_validity_headers())
 
     def run(self):
         print("FlexUnlimited is running.")
-        self.solve_captcha()
+        # self.solve_captcha()
         Log.info("Starting job search...")
         startTimeUnix = datetime.now()
         while get_finder():

@@ -1,2 +1,4 @@
-venv
+venv/
 json/
+chrome/capsolver/
+chrome/data_user/
