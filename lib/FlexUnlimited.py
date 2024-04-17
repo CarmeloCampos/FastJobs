@@ -639,12 +639,10 @@ class FlexUnlimited:
                     break
             except Exception as e:
                 Log.error(f"Error finder: {e}")
+                time.sleep(5)
             time.sleep(random.randint(13, 47))
             Log.info("Job search stopped.")
-            try:
-                update_time_run(startTimeUnix)
-            except Exception as etg:
-                time.time()
-                # Log.error(f"Time tg")
+            update_time_run(startTimeUnix)
+
         Log.info("Job search cycle ending...")
         Log.info(f"Accepted {len(self.__acceptedOffers)} offers in {time.time() - self.__startTimestamp} seconds")
