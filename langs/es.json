@@ -57,5 +57,14 @@
   "errorAcceptBlock": "No se pudo aceptar un bloque. Inténtalo de nuevo.",
   "minutes": "Minutos",
   "allDays": "Todos los días",
-  "stopedBot": "Bot detenido"
+  "stopedBot": "Bot detenido",
+  "Location": "Ubicación: ",
+  "Date": "Fecha: ",
+  "Pay": "Pago: ",
+  "Pay rate per hour": "Pago por hora: ",
+  "Block Duration": "Duración del bloque: ",
+  "Hour": "Hora",
+  "Hours": "Horas",
+  "Start Time": "Hora de inicio: ",
+  "End Time": "Hora de finalización: "
 }

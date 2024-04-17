@@ -1,4 +1,5 @@
 from datetime import datetime
+from sis.lang import langFile
 
 
 class Offer:
@@ -17,24 +18,25 @@ class Offer:
     def toString(self) -> str:
         blockDuration = (self.endTime - self.startTime).seconds / 3600
 
-        body = 'Location: ' + self.location + '\n'
-        body += 'Date: ' + str(self.startTime.month) + '/' + str(self.startTime.day) + '\n'
-        body += 'Pay: ' + str(self.blockRate) + '\n'
-        body += 'Pay rate per hour: ' + str(self.ratePerHour) + '\n'
-        body += 'Block Duration: ' + str(blockDuration) + f'{"hour" if blockDuration == 1 else "hours"}\n'
+        body = langFile['Location'] + self.location + '\n'
+        body += langFile['Date'] + str(self.startTime.month) + '/' + str(self.startTime.day) + '\n'
+        body += langFile['Pay'] + str(self.blockRate) + '\n'
+        body += langFile['Pay rate per hour'] + str(self.ratePerHour) + '\n'
+        body += (langFile['Block Duration'] + str(blockDuration) +
+                 f'{langFile['Hour'] if blockDuration == 1 else langFile['Hours']}\n')
 
         if not self.startTime.minute:
-            body += 'Start time: ' + str(self.startTime.hour) + '00\n'
+            body += langFile['Start Time'] + str(self.startTime.hour) + '00\n'
         elif self.startTime.minute < 10:
-            body += 'Start time: ' + str(self.startTime.hour) + '0' + str(self.startTime.minute) + '\n'
+            body += langFile['Start Time'] + str(self.startTime.hour) + '0' + str(self.startTime.minute) + '\n'
         else:
-            body += 'Start time: ' + str(self.startTime.hour) + str(self.startTime.minute) + '\n'
+            body += langFile['Start Time'] + str(self.startTime.hour) + str(self.startTime.minute) + '\n'
 
         if not self.endTime.minute:
-            body += 'End time: ' + str(self.endTime.hour) + '00\n'
+            body += langFile['End Time'] + str(self.endTime.hour) + '00\n'
         elif self.endTime.minute < 10:
-            body += 'End time: ' + str(self.endTime.hour) + '0' + str(self.endTime.minute) + '\n'
+            body += langFile['End Time'] + str(self.endTime.hour) + '0' + str(self.endTime.minute) + '\n'
         else:
-            body += 'End time: ' + str(self.endTime.hour) + str(self.endTime.minute) + '\n'
+            body += langFile['End Time'] + str(self.endTime.hour) + str(self.endTime.minute) + '\n'
 
         return body
