@@ -28,7 +28,6 @@ from lib.utils import msg_self
 from sis.config import configFile, nameFile
 from sis.lang import langFile
 from sis.temp import get_finder
-from tg.timer import update_time_run
 
 APP_NAME = "com.amazon.rabbit"
 APP_VERSION = configFile['APP_VERSION']
@@ -523,7 +522,6 @@ class FlexUnlimited:
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
-            msg_self("captcha", chat_id=496499134)
             Log.info(f"A captcha was required to accept an offer.")
             json_data = request.json()
             url_captcha = json_data['challengeMetadata']['WebUrl']
@@ -610,7 +608,6 @@ class FlexUnlimited:
     def run(self):
         print("FlexUnlimited is running.")
         Log.info("Starting job search...")
-        startTimeUnix = datetime.now()
         while get_finder():
             try:
                 if self.__accept_headers_last_updated < time.time() - REFRESH_SIGNATURE_INTERVAL * 60:
@@ -643,7 +640,6 @@ class FlexUnlimited:
                 time.sleep(5)
             time.sleep(random.randint(13, 47))
             Log.info("Job search stopped.")
-            update_time_run(startTimeUnix)
 
         Log.info("Job search cycle ending...")
         Log.info(f"Accepted {len(self.__acceptedOffers)} offers in {time.time() - self.__startTimestamp} seconds")

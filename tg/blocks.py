@@ -12,7 +12,7 @@ from sis.temp import get_finder, update_finding
 
 async def first_run():
     bot = get_bot()
-    run_msg = await bot.sendMessage(chat_id=configFile['telegramChatId'], text='00:00:00')
+    run_msg = await bot.sendMessage(chat_id=configFile['telegramChatId'], text='✅')
     await bot.pinChatMessage(chat_id=run_msg.chat.id, message_id=run_msg.message_id)
     flex.updateSelf('telegramMsgId', run_msg.message_id, skip_self=True)
 
