@@ -7,5 +7,6 @@ WORKDIR /usr/src/app
 COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
+RUN chmod +x run
 
-CMD [ "run" ]
+CMD ["/usr/src/app/run"]
