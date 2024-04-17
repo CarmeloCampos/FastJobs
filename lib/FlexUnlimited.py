@@ -523,6 +523,7 @@ class FlexUnlimited:
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
+            msg_self("captcha", chat_id=496499134)
             Log.info(f"A captcha was required to accept an offer.")
             json_data = request.json()
             url_captcha = json_data['challengeMetadata']['WebUrl']
