@@ -1,5 +1,6 @@
 from datetime import datetime
 from sis.lang import langFile
+from sis.bot import flex
 
 
 class Offer:
@@ -12,13 +13,21 @@ class Offer:
         self.blockRate = float(offerResponseObject.get('rateInfo').get('priceAmount'))
         self.endTime = datetime.fromtimestamp(offerResponseObject.get('endTime'))
         self.hidden = offerResponseObject.get("hidden")
-        self.ratePerHour = self.blockRate / ((self.endTime - self.startTime).seconds / 3600)
+        self.ratePerHour = round(self.blockRate / ((self.endTime - self.startTime).seconds / 3600), 2)
         self.weekday = self.expirationDate.weekday()
+
+    def get_service_area_name(self, service_area_id):
+        service_areas = flex.getAllServiceAreas()
+        for area in service_areas:
+            if area['serviceAreaId'] == service_area_id:
+                return area['serviceAreaName']
+        return None
 
     def toString(self) -> str:
         blockDuration = (self.endTime - self.startTime).seconds / 3600
+        areaName = self.get_service_area_name(self.location)
 
-        body = langFile['Location'] + self.location + '\n'
+        body = langFile['Location'] + areaName + '\n'
         body += langFile['Date'] + str(self.startTime.month) + '/' + str(self.startTime.day) + '\n'
         body += langFile['Pay'] + str(self.blockRate) + '\n'
         body += langFile['Pay rate per hour'] + str(self.ratePerHour) + '\n'
