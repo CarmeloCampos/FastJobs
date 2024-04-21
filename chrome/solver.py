@@ -13,7 +13,7 @@ class Solver(object):
         self.token = None
         options = webdriver.ChromeOptions()
         options.add_extension("Captcha-Solver-Auto-captcha-solving-service.crx")
-        options.add_argument(f"--user-agent={user_agent}")
+        options.add_argument("--user-agent=" + user_agent)
         self.options = options
         self.driver = webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=self.options)
 
@@ -35,18 +35,14 @@ class Solver(object):
         sleep(randint(8, 17))
         if 'uniqueValidationId' in self.driver.current_url:
             return True
-        else:
-            print("other")
-            return self.intent_solve(url_captcha)
 
     def solve(self, url_captcha):
-        sleep(randint(5, 7))
-        self.intent_solve(url_captcha)
-        print("nice")
-        parsed_url = urlparse(self.driver.current_url)
-        query_params = parse_qs(parsed_url.query)
-        session_token = query_params['sessionToken'][0]
-        self.token = unquote(session_token)
+        if self.intent_solve(url_captcha):
+            parsed_url = urlparse(self.driver.current_url)
+            query_params = parse_qs(parsed_url.query)
+            session_token = query_params['sessionToken'][0]
+            self.token = unquote(session_token)
+            return True
 
     def run(self, session, header):
         payload = {'challengeToken': self.token}

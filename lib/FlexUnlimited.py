@@ -526,7 +526,6 @@ class FlexUnlimited:
             Log.info(f"A captcha was required to accept an offer.")
             json_data = request.json()
             url_captcha = json_data['challengeMetadata']['WebUrl']
-            json.dump(json_data, open("json/{}_captcha.json".format(str(time.time())), "w"), indent=2)
             self.solve_captcha(url_captcha)
         else:
             msg_self(langFile['errorAcceptBlock'])
@@ -603,8 +602,8 @@ class FlexUnlimited:
         return self.__acceptHeaders
 
     def solve_captcha(self, url_captcha):
-        self.driver.solve(url_captcha)
-        self.driver.run(self.session, self.sign_validity_headers())
+        if self.driver.solve(url_captcha):
+            self.driver.run(self.session, self.sign_validity_headers())
 
     def run(self):
         print("FlexUnlimited is running.")
