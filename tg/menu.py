@@ -10,7 +10,7 @@ main_menu = ReplyKeyboardMarkup([
 config_menu = ReplyKeyboardMarkup([
     [langFile['showAllDataConfig']],
     [langFile['hourlyPay'], langFile['blockPay'], langFile['arrivalBuffer']],
-    [langFile['selectDays'], langFile['selectHours']],
+    [langFile['selectDays'], langFile['selectHours'], langFile['setWireHouse']],
     [langFile['backMenu']]
 ], resize_keyboard=True)
 

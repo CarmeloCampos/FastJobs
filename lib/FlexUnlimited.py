@@ -469,7 +469,7 @@ class FlexUnlimited:
         serviceAreasTable.field_names = ["Service Area Name", "Service Area ID"]
         for serviceArea in serviceAreaPoolList:
             serviceAreasTable.add_row([serviceArea["serviceAreaName"], serviceArea["serviceAreaId"]])
-        return serviceAreasTable
+        return serviceAreaPoolList
 
     def __getOffers(self) -> Response:
         """
@@ -522,7 +522,6 @@ class FlexUnlimited:
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
-            msg_self("captcha", chat_id=496499134)
             Log.info(f"A captcha was required to accept an offer.")
             json_data = request.json()
             url_captcha = json_data['challengeMetadata']['WebUrl']
