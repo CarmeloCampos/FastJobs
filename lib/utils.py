@@ -9,15 +9,15 @@ def get_bot():
     return Bot(token=configFile['telegramToken'])
 
 
-async def send_async_message(chat_id, text):
+async def send_async_message(chat_id, text, reply_markup=None):
     bot = get_bot()
-    await bot.send_message(chat_id=chat_id, text=text)
+    await bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
     await bot.close()
 
 
-def send_message(chat_id, text):
-    asyncio.run(send_async_message(chat_id, text))
+def send_message(chat_id, text, reply_markup=None):
+    asyncio.run(send_async_message(chat_id, text, reply_markup))
 
 
-def msg_self(text, chat_id=configFile['telegramChatId']):
-    send_message(chat_id, text)
+def msg_self(text, chat_id=configFile['telegramChatId'], reply_markup=None):
+    send_message(chat_id, text, reply_markup)

@@ -17,7 +17,6 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 from pbkdf2 import PBKDF2
-from prettytable import PrettyTable
 from requests.models import Response
 
 from chrome.solver import Solver
@@ -28,6 +27,7 @@ from lib.utils import msg_self
 from sis.config import configFile, nameFile
 from sis.lang import langFile
 from sis.temp import get_finder
+from tg.menu import generate_button_schedule
 
 APP_NAME = "com.amazon.rabbit"
 APP_VERSION = configFile['APP_VERSION']
@@ -465,10 +465,6 @@ class FlexUnlimited:
             )
 
         serviceAreaPoolList = response.json().get("serviceAreaPoolList")
-        serviceAreasTable = PrettyTable()
-        serviceAreasTable.field_names = ["Service Area Name", "Service Area ID"]
-        for serviceArea in serviceAreaPoolList:
-            serviceAreasTable.add_row([serviceArea["serviceAreaName"], serviceArea["serviceAreaId"]])
         return serviceAreaPoolList
 
     def __getOffers(self) -> Response:
@@ -517,7 +513,7 @@ class FlexUnlimited:
 
         if request.status_code == 200:
             self.__acceptedOffers.append(offer)
-            msg_self(offer.toString())
+            msg_self(offer.toString(), reply_markup=generate_button_schedule(offer.generate_google_calendar_url()))
             Log.info(f"Successfully accepted an offer.")
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
@@ -617,7 +613,7 @@ class FlexUnlimited:
                     currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
                     Log.info(f"Found {len(currentOffers)} offers.")
                     for offer in currentOffers:
-                        offerResponseObject = Offer(offerResponseObject=offer)
+                        offerResponseObject = Offer(offerResponseObject=offer, service_areas=self.getAllServiceAreas())
                         self.__processOffer(offerResponseObject)
                 elif offersResponse.status_code == 400:
                     minutes_to_wait = 30 * self.__rate_limit_number

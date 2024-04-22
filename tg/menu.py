@@ -1,4 +1,4 @@
-from telegram import ReplyKeyboardMarkup
+from telegram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 
 from sis.lang import langFile
 
@@ -10,7 +10,7 @@ main_menu = ReplyKeyboardMarkup([
 config_menu = ReplyKeyboardMarkup([
     [langFile['showAllDataConfig']],
     [langFile['hourlyPay'], langFile['blockPay'], langFile['arrivalBuffer']],
-    [langFile['selectDays'], langFile['selectHours'], langFile['setWireHouse']],
+    [langFile['selectDays'], langFile['selectHours'], langFile['setWareHouse']],
     [langFile['backMenu']]
 ], resize_keyboard=True)
 
@@ -49,3 +49,9 @@ select_days_menu = ReplyKeyboardMarkup([
 ], resize_keyboard=True)
 
 arrival_menu = ReplyKeyboardMarkup([["15m", "30m", "45m"]], resize_keyboard=True)
+
+
+def generate_button_schedule(url):
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton(langFile['schedule'], url=url)],
+    ])
