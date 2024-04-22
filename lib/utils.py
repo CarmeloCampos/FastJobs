@@ -11,8 +11,10 @@ def get_bot():
 
 async def send_async_message(chat_id, text, reply_markup=None):
     bot = get_bot()
-    await bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
-    await bot.close()
+    try:
+        await bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
+    finally:
+        await bot.close()
 
 
 def send_message(chat_id, text, reply_markup=None):

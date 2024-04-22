@@ -58,10 +58,6 @@ class Offer:
     def twilio_send(self):
         to_number = get_now_data('phoneNum')
         from_number = "+17864604281"
-        twilioClient.messages.create(
-            to=to_number,
-            from_=from_number,
-            body=self.toString())
         twilioClient.calls.create(
             to=to_number,
             from_=from_number,
