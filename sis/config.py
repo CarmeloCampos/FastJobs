@@ -22,3 +22,7 @@ def get_flex_data(key):
 def get_now_data(key):
     nowFile = load(open(nameFile))
     return nowFile.get(key)
+
+
+def get_one_offer():
+    return load(open('json/offers.json'))[0]

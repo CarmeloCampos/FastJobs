@@ -514,6 +514,7 @@ class FlexUnlimited:
         if request.status_code == 200:
             self.__acceptedOffers.append(offer)
             msg_self(offer.toString(), reply_markup=generate_button_schedule(offer.generate_google_calendar_url()))
+            offer.twilio_send()
             Log.info(f"Successfully accepted an offer.")
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
@@ -601,7 +602,6 @@ class FlexUnlimited:
             self.driver.run(self.session, self.sign_validity_headers())
 
     def run(self):
-        print("FlexUnlimited is running.")
         Log.info("Starting job search...")
         while get_finder():
             try:

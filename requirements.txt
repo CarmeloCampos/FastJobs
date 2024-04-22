@@ -14,3 +14,4 @@ pyasn1==0.6.0
 cryptography==42.0.5
 python-telegram-bot==21.0.1
 selenium==4.19.0
+twilio==9.0.5

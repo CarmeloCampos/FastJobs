@@ -1,7 +1,9 @@
 from datetime import datetime
 from urllib.parse import quote
 
+from sis.config import get_now_data
 from sis.lang import langFile
+from sis.twilio import twilioClient
 
 
 class Offer:
@@ -40,25 +42,30 @@ class Offer:
         blockDuration = (self.endTime - self.startTime).seconds / 3600
         areaName = self.get_service_area_name()
 
-        body = langFile['Location'] + areaName + '\n'
-        body += langFile['Date'] + str(self.startTime.month) + '/' + str(self.startTime.day) + '\n'
+        body = langFile['bloqueAceptado'] + '\n'
+        body += langFile['Location'] + areaName + '\n'
+        body += langFile['Date'] + self.startTime.strftime('%d/%m/%y') + '\n'
         body += langFile['Pay'] + str(self.blockRate) + '\n'
         body += langFile['Pay rate per hour'] + str(self.ratePerHour) + '\n'
         body += (langFile['Block Duration'] + str(blockDuration) +
                  f'{langFile['Hour'] if blockDuration == 1 else langFile['Hours']}\n')
 
-        if not self.startTime.minute:
-            body += langFile['Start Time'] + str(self.startTime.hour) + '00\n'
-        elif self.startTime.minute < 10:
-            body += langFile['Start Time'] + str(self.startTime.hour) + '0' + str(self.startTime.minute) + '\n'
-        else:
-            body += langFile['Start Time'] + str(self.startTime.hour) + str(self.startTime.minute) + '\n'
-
-        if not self.endTime.minute:
-            body += langFile['End Time'] + str(self.endTime.hour) + '00\n'
-        elif self.endTime.minute < 10:
-            body += langFile['End Time'] + str(self.endTime.hour) + '0' + str(self.endTime.minute) + '\n'
-        else:
-            body += langFile['End Time'] + str(self.endTime.hour) + str(self.endTime.minute) + '\n'
+        body += langFile['Start Time'] + self.startTime.strftime('%H:%M') + '\n'
+        body += langFile['End Time'] + self.endTime.strftime('%H:%M') + '\n'
 
         return body
+
+    def twilio_send(self):
+        to_number = get_now_data('phoneNum')
+        from_number = "+17864604281"
+        twilioClient.messages.create(
+            to=to_number,
+            from_=from_number,
+            body=self.toString())
+        twilioClient.calls.create(
+            to=to_number,
+            from_=from_number,
+            twiml='<Response><Say>' + langFile["callAcceptBloque"].format(self.startTime.strftime('%d/%m'),
+                                                                          self.startTime.strftime('%H:%M'))
+                  + '</Say></Response>'
+        )

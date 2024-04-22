@@ -3,8 +3,7 @@ from telegram.ext import ContextTypes
 
 from lib.utils import get_bot
 from sis.bot import flex
-from sis.config import configFile
-from sis.config import get_flex_data
+from sis.config import configFile, get_flex_data
 from sis.engine import get_fresh_finder, reload_finder
 from sis.lang import langFile
 from sis.temp import get_finder, update_finding
@@ -32,7 +31,6 @@ async def search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def stop_search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    print("stop_search")
     if get_finder():
         update_finding(False)
         await update.message.reply_text(langFile['searchStopped'])

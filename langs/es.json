@@ -47,6 +47,7 @@
   "noConfigDays": "No hay días configurados actualmente",
   "remove": "❌ Eliminar",
   "add": "✳️ Agregar",
+  "bloqueAceptado": "Bloque aceptado",
   "addNewDay": "Agrego {} a la lista de días de trabajo.",
   "alreadyInList": "Este dia ya esta en la lista o introdujo una palabra errónea",
   "initDesiredTime": "Por favor, seleccione la hora deseada",
@@ -75,5 +76,6 @@
   "Hours": "Horas",
   "Start Time": "Hora de inicio: ",
   "End Time": "Hora de finalización: ",
-  "schedule": "🗓 Agendar"
+  "schedule": "🗓 Agendar",
+  "callAcceptBloque": "Hola, esta es una llamada automatizada de FastJobs, se te informa que hemos aceptado un bloque para el dia {} a las {} horas, en nuestro bot de telegram encontrarás más información."
 }
