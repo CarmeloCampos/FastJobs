@@ -1,6 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 
+from lib.tiny import short_url
 from sis.bot import flex
 from sis.config import set_flex_data, get_flex_data
 from sis.lang import langFile
@@ -11,8 +12,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
     if flex.needLogin():
         await update.message.reply_text(langFile['needLogin'])
         link, verifier = flex.generate_challenge_link()
-        await update.message.reply_text(link)
-        # Falta el mensaje de login y ejemplos
+        short_link = short_url(link)
+        body = langFile['loginSteep']['step0'] + ' ' + short_link
+        body += "\n\n" + langFile['loginSteep']['step1']
+        body += "\n" + langFile['loginSteep']['step2']
+        body += "\n" + langFile['loginSteep']['step3']
+        body += "\n\n<i>" + langFile['loginSteep']['example'] + "</i>"
+        await update.message.reply_video(video="https://carmelocampos.com/cdn/SVID_20220206_023540_1.mp4", caption=body,
+                                         parse_mode='HTML')
         await update.message.reply_text(langFile['toCancel'])
         set_flex_data('waiting_login', True)
         set_flex_data('code_verifier', verifier)

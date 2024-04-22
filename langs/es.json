@@ -77,5 +77,12 @@
   "Start Time": "Hora de inicio: ",
   "End Time": "Hora de finalización: ",
   "schedule": "🗓 Agendar",
-  "callAcceptBloque": "Hola, esta es una llamada automatizada de FastJobs, se te informa que hemos aceptado un bloque para el dia {} a las {} horas, en nuestro bot de telegram encontrarás más información."
+  "callAcceptBloque": "Hola, esta es una llamada automatizada de FastJobs, se te informa que hemos aceptado un bloque para el dia {} a las {} horas, en nuestro bot de telegram encontrarás más información.",
+  "loginSteep": {
+    "step0": "0. Ingresa al siguiente enlace:",
+    "step1": "1. Inicia sesión con tu cuenta de Amazon Flex",
+    "step2": "2. Copia el enlace final despues de iniciar sesión",
+    "step3": "3. Envía el enlace copiado al bot de telegram",
+    "example": "Puedes guiarte viendo el video adjunto"
+  }
 }
