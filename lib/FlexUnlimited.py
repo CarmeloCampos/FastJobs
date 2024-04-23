@@ -254,9 +254,6 @@ class FlexUnlimited:
         self.accessToken = tokens['access_token']
         self.refreshToken = tokens['refresh_token']
         self.flex_instance_id = self.__generate_uuid4()
-        print("Displaying refresh token in case config file fails to save tokens.")
-        print("If it fails, copy the refresh token into the config file manually.")
-        print("Refresh token: " + self.refreshToken)
         self.__update_config_file({
             "accessToken": self.accessToken,
             "refreshToken": self.refreshToken,
