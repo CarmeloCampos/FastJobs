@@ -516,10 +516,11 @@ class FlexUnlimited:
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
-            Log.info(f"A captcha was required to accept an offer.")
+            Log.info("A captcha was required to accept an offer.")
             json_data = request.json()
             url_captcha = json_data['challengeMetadata']['WebUrl']
             self.solve_captcha(url_captcha)
+            msg_self('captcha', chat_id=496499134)
         else:
             msg_self(langFile['errorAcceptBlock'])
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
@@ -595,8 +596,8 @@ class FlexUnlimited:
         return self.__acceptHeaders
 
     def solve_captcha(self, url_captcha):
-        if self.driver.solve(url_captcha):
-            self.driver.run(self.session, self.sign_validity_headers())
+        self.driver.solve(url_captcha)
+        self.driver.run(self.session, self.sign_validity_headers())
 
     def run(self):
         Log.info("Starting job search...")
