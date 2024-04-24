@@ -20,7 +20,7 @@ from pbkdf2 import PBKDF2
 from requests.models import Response
 
 from chrome.solver import Solver
-from lib.Chain import Chain
+from lib.Chain import get_chain
 from lib.Log import Log
 from lib.Offer import Offer
 from lib.utils import msg_self
@@ -500,7 +500,7 @@ class FlexUnlimited:
                 json={"offerId": offer.id})
 
         if request.status_code == 420:
-            self.register_attestation()
+            self.get_key_id()
             self.__updateFlexHeaders(self.__acceptHeaders)
             self.sign_accept_headers()
             request = self.session.post(
@@ -570,7 +570,7 @@ class FlexUnlimited:
         nonce_base64 = self.get_nonce(device_id)
         nonce = base64.b64decode(nonce_base64).decode('utf-8')
 
-        certs, private_key = Chain.get_chain(nonce)
+        certs, private_key = get_chain(nonce)
 
         self.private_key_str = self.serialize_and_encode_keys(private_key)
         self.__update_config_file({
