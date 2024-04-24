@@ -601,11 +601,10 @@ class FlexUnlimited:
 
     def run(self):
         Log.info("Starting job search...")
+        self.solve_captcha("https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2&"
+                           "returnTo=https://www.amazon.com&headerFooter=false")
         while get_finder():
             try:
-                self.solve_captcha(
-                    "https://www.amazon.com/aaut/verify/flex-offers/challenge?challengeType=ARKOSE_LEVEL_2&"
-                    "returnTo=https://www.amazon.com&headerFooter=false")
                 if self.__accept_headers_last_updated < time.time() - REFRESH_SIGNATURE_INTERVAL * 60:
                     self.sign_accept_headers()
                 offersResponse = self.__getOffers()
