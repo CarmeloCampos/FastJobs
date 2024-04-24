@@ -37,12 +37,11 @@ class Solver(object):
             return True
 
     def solve(self, url_captcha):
-        if self.intent_solve(url_captcha):
-            parsed_url = urlparse(self.driver.current_url)
-            query_params = parse_qs(parsed_url.query)
-            session_token = query_params['sessionToken'][0]
-            self.token = unquote(session_token)
-            return True
+        self.intent_solve(url_captcha)
+        parsed_url = urlparse(self.driver.current_url)
+        query_params = parse_qs(parsed_url.query)
+        session_token = query_params['sessionToken'][0]
+        self.token = unquote(session_token)
 
     def run(self, session, header):
         payload = {'challengeToken': self.token}
