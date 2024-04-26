@@ -8,10 +8,11 @@ services:
       - SE_SESSION_REQUEST_TIMEOUT=31557600
       - SE_NODE_SESSION_TIMEOUT=31557600
     expose:
-      - "4444:4444"
+      - "4444"
     networks:
       fastnet:
         ipv4_address: 192.168.50.3
+
   fastjobs:
     build: .
     volumes:

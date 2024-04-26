@@ -30,7 +30,7 @@ from sis.temp import get_finder
 from tg.menu import generate_button_schedule
 
 APP_NAME = "com.amazon.rabbit"
-APP_VERSION = configFile['APP_VERSION']
+APP_VERSION = str(configFile['APP_VERSION'])
 DEVICE_NAME = configFile['DEVICE_NAME']
 MANUFACTURER = configFile['MANUFACTURER']
 DEVICE_TYPE = configFile['DEVICE_TYPE']

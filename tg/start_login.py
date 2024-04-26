@@ -18,7 +18,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> str:
         body += "\n" + langFile['loginSteep']['step2']
         body += "\n" + langFile['loginSteep']['step3']
         body += "\n\n<i>" + langFile['loginSteep']['example'] + "</i>"
-        await update.message.reply_video(video="https://carmelocampos.com/cdn/FastJobsIntro-1.mp4", caption=body,
+        await update.message.reply_video(video="https://cdn.dogalyir.com/FastJobsIntro-1.mp4", caption=body,
                                          parse_mode='HTML')
         await update.message.reply_text(langFile['toCancel'])
         set_flex_data('waiting_login', True)
