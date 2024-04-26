@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "finder",
-        "captcha"
+        "captcha",
+        "login"
     ]
 }
