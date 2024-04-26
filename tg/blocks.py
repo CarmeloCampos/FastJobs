@@ -23,7 +23,10 @@ async def search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await update.message.reply_text(langFile['searchInProgress'])
             return
         await update.message.reply_text(langFile['searching'])
-        await first_run()
+        if update.message.from_user.id == configFile['telegramChatId']:
+            await first_run()
+        else:
+            await update.message.reply_text("Mode admin")
         update_finding(True)
         get_fresh_finder().start()
     else:
