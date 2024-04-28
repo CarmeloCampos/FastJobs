@@ -3,7 +3,6 @@ import gzip
 import hashlib
 import hmac
 import json
-import random
 import secrets
 import time
 import uuid
@@ -487,8 +486,9 @@ class FlexUnlimited:
 
     def __acceptOffer(self, offer: Offer):
         self.__updateFlexHeaders(self.__acceptHeaders)
+        offer_id = offer.offer_data.get("offerId")
         request = self.session.post(FlexUnlimited.routes.get("AcceptOffer"), headers=self.__acceptHeaders,
-                                    json={"offerId": offer.id})
+                                    json={"offerId": offer_id})
 
         if request.status_code == 403:
             self.__getFlexAccessToken()
@@ -497,7 +497,7 @@ class FlexUnlimited:
             request = self.session.post(
                 FlexUnlimited.routes.get("AcceptOffer"),
                 headers=self.__acceptHeaders,
-                json={"offerId": offer.id})
+                json={"offerId": offer_id})
 
         if request.status_code == 420:
             self.get_key_id()
@@ -506,7 +506,7 @@ class FlexUnlimited:
             request = self.session.post(
                 FlexUnlimited.routes.get("AcceptOffer"),
                 headers=self.__acceptHeaders,
-                json={"offerId": offer.id})
+                json={"offerId": offer_id})
 
         if request.status_code == 200:
             self.__acceptedOffers.append(offer)
@@ -525,25 +525,26 @@ class FlexUnlimited:
             msg_self(langFile['errorAcceptBlock'])
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
 
-    def __processOffer(self, offer: Offer):
-        if offer.hidden:
+    def process_offer(self, offer: Offer):
+        if offer.offer_data.get("hidden"):
+            print("Hidden offer")
             return
 
-        if self.desiredWeekdays:
-            if offer.weekday not in self.desiredWeekdays:
-                return
+        weekday = offer.expiration_date().weekday()
+        if self.desiredWeekdays and weekday not in self.desiredWeekdays:
+            print("Weekday not desired")
+            return
 
-        if self.options['minBlockRate']:
-            if offer.blockRate < self.options['minBlockRate']:
-                return
+        if self.options['minBlockRate'] and offer.block_rate() < self.options['minBlockRate']:
+            print("Block rate too low")
+            return
 
-        if self.options['minPayRatePerHour']:
-            if offer.ratePerHour < self.options['minPayRatePerHour']:
-                return
+        if self.options['minPayRatePerHour'] and offer.rate_per_hour() < self.options['minPayRatePerHour']:
+            print("Pay rate per hour too low")
+            return
 
         if self.options['arrivalBuffer']:
-            deltaTime = (offer.expirationDate - datetime.now()).seconds / 60
-            if deltaTime < self.options['arrivalBuffer']:
+            if (offer.expiration_date() - datetime.now()).seconds / 60 < self.options['arrivalBuffer']:
                 return
 
         self.__acceptOffer(offer)
@@ -610,11 +611,11 @@ class FlexUnlimited:
                 offersResponse = self.__getOffers()
                 if offersResponse.status_code == 200:
                     currentOffers = offersResponse.json().get("offerList")
-                    currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
+                    # currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
                     Log.info(f"Found {len(currentOffers)} offers.")
                     for offer in currentOffers:
                         offerResponseObject = Offer(offerResponseObject=offer, service_areas=self.getAllServiceAreas())
-                        self.__processOffer(offerResponseObject)
+                        self.process_offer(offerResponseObject)
                 elif offersResponse.status_code == 400:
                     minutes_to_wait = 30 * self.__rate_limit_number
                     Log.info("Rate limit reached. Waiting for " + str(minutes_to_wait) + " minutes.")
@@ -633,7 +634,7 @@ class FlexUnlimited:
             except Exception as e:
                 Log.error(f"Error finder: {e}")
                 time.sleep(5)
-            time.sleep(random.randint(13, 47))
+            time.sleep(1)
             Log.info("Job search stopped.")
 
         Log.info("Job search cycle ending...")

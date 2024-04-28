@@ -7,61 +7,74 @@ from sis.twilio import twilioClient
 
 
 class Offer:
-
     def __init__(self, offerResponseObject: object, service_areas) -> None:
-        self.id = offerResponseObject.get("offerId")
-        self.expirationDate = datetime.fromtimestamp(offerResponseObject.get("expirationDate"))
-        self.startTime = datetime.fromtimestamp(offerResponseObject.get("startTime"))
-        self.location = offerResponseObject.get('serviceAreaId')
-        self.blockRate = float(offerResponseObject.get('rateInfo').get('priceAmount'))
-        self.endTime = datetime.fromtimestamp(offerResponseObject.get('endTime'))
-        self.hidden = offerResponseObject.get("hidden")
-        self.ratePerHour = round(self.blockRate / ((self.endTime - self.startTime).seconds / 3600), 2)
-        self.weekday = self.expirationDate.weekday()
+        self.offer_data = offerResponseObject
         self.service_areas = service_areas
 
-    def generate_google_calendar_url(self) -> str:
-        name = self.get_service_area_name()
-        title = quote(f"Job: {name} - FastJobs")
-        start = self.startTime.strftime('%Y%m%dT%H%M%S')
-        end = self.endTime.strftime('%Y%m%dT%H%M%S')
-        details = quote(self.toString())
-        location = quote(name)
+    def block_rate(self):
+        return float(self.offer_data.get('rateInfo').get('priceAmount'))
 
-        url = f"https://www.google.com/calendar/event?action=TEMPLATE&text={title}&dates={start}/{end}&details={details}&location={location}&trp=false"
+    def start_time(self):
+        return datetime.fromtimestamp(self.offer_data.get("startTime"))
 
-        return url
+    def end_time(self):
+        return datetime.fromtimestamp(self.offer_data.get("endTime"))
+
+    def expiration_date(self):
+        return datetime.fromtimestamp(self.offer_data.get("expirationDate"))
+
+    def rate_per_hour(self):
+        time_delta = self.end_time() - self.start_time()
+        return round(self.block_rate() / (time_delta.seconds / 3600), 2)
 
     def get_service_area_name(self):
+        location = self.offer_data.get('serviceAreaId')
         for area in self.service_areas:
-            if area['serviceAreaId'] == self.location:
+            if area['serviceAreaId'] == location:
                 return area['serviceAreaName']
         return None
 
-    def toString(self) -> str:
-        blockDuration = (self.endTime - self.startTime).seconds / 3600
-        areaName = self.get_service_area_name()
+    def generate_google_calendar_url(self):
+        title = quote(f"Job: {self.get_service_area_name()} - FastJobs")
+        start = self.start_time().strftime('%Y%m%dT%H%M%S')
+        end = self.end_time().strftime('%Y%m%dT%H%M%S')
+        details = quote(self.toString())
+        location = quote(self.get_service_area_name())
+        return f"https://www.google.com/calendar/event?action=TEMPLATE&text={title}&dates={start}/{end}&details={details}&location={location}&trp=false"
 
-        body = langFile['bloqueAceptado'] + '\n'
-        body += langFile['Location'] + areaName + '\n'
-        body += langFile['Date'] + self.startTime.strftime('%d/%m/%y') + '\n'
-        body += langFile['Pay'] + str(self.blockRate) + '\n'
-        body += langFile['Pay rate per hour'] + str(self.ratePerHour) + '\n'
-        body += (langFile['Block Duration'] + str(blockDuration) +
-                 f'{langFile['Hour'] if blockDuration == 1 else langFile['Hours']}\n')
+    def toString(self):
+        duration = (self.end_time() - self.start_time()).seconds / 3600
+        area_name = self.get_service_area_name()
+        duration_string = f"{duration} {'Hour' if duration == 1 else 'Hours'}"
 
-        body += langFile['Start Time'] + self.startTime.strftime('%H:%M') + '\n'
-        body += langFile['End Time'] + self.endTime.strftime('%H:%M') + '\n'
+        details = [
+            langFile['bloqueAceptado'],
+            f"{langFile['Location']}: {area_name}",
+            f"{langFile['Date']}: {self.start_time().strftime('%d/%m/%Y')}",
+            f"{langFile['Start Time']}: {self.start_time().strftime('%H:%M')}",
+            f"{langFile['End Time']}: {self.end_time().strftime('%H:%M')}",
+            f"{langFile['Pay']}: {self.block_rate()} USD",
+            f"{langFile['Pay rate per hour']}: {self.rate_per_hour()} USD/Hr",
+            f"{langFile['Block Duration']}: {duration_string}"
+        ]
 
-        return body
+        return '\n'.join(details)
 
     def twilio_send(self):
-        to_number = get_now_data('phoneNum')
-        from_number = "+17864604281"
-        twilioClient.calls.create(
-            to=to_number,
-            from_=from_number,
-            twiml='<Response><Say>' + langFile["callAcceptBloque"].format(self.startTime.strftime('%d/%m'),
-                                                                          self.startTime.strftime('%H:%M'))
-                  + '</Say></Response>'
-        )
+        try:
+            to_number = get_now_data('phoneNum')
+            from_number = "+17864604281"
+
+            call_time = self.start_time().strftime('%d/%m %H:%M')
+            message = langFile["callAcceptBloque"].format(call_time)
+            twiml_response = f"<Response><Say>{message}</Say></Response>"
+
+            call = twilioClient.calls.create(
+                to=to_number,
+                from_=from_number,
+                twiml=twiml_response
+            )
+            print(f"Call initiated, Call SID: {call.sid}")
+
+        except Exception as e:
+            print(f"Error initiating call with Twilio: {e}")
