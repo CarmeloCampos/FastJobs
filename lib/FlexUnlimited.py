@@ -513,7 +513,7 @@ class FlexUnlimited:
             self.__acceptedOffers.append(offer)
             msg_self(offer.toString(), reply_markup=generate_button_schedule(offer.generate_google_calendar_url()))
             offer.twilio_send()
-            Log.info(f"Successfully accepted an offer.")
+            Log.info("Successfully accepted an offer: hidden " + offer.offer_data.get("hidden"))
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
         elif request.status_code == 307:
