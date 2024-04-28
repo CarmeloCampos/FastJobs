@@ -7,6 +7,7 @@ import secrets
 import time
 import uuid
 from datetime import datetime
+from random import randint
 from typing import Dict, List, Tuple
 from urllib.parse import unquote, urlparse, parse_qs, urlencode
 
@@ -526,8 +527,7 @@ class FlexUnlimited:
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
 
     def process_offer(self, offer: Offer):
-        if offer.offer_data.get("hidden"):
-            print("Hidden offer")
+        if offer.offer_data.get("hidden") and configFile["ignoreHidden"]:
             return
 
         weekday = offer.expiration_date().weekday()
@@ -634,7 +634,7 @@ class FlexUnlimited:
             except Exception as e:
                 Log.error(f"Error finder: {e}")
                 time.sleep(5)
-            time.sleep(1)
+            time.sleep(randint(13, 47))
             Log.info("Job search stopped.")
 
         Log.info("Job search cycle ending...")
