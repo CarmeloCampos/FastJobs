@@ -613,6 +613,7 @@ class FlexUnlimited:
                     currentOffers = offersResponse.json().get("offerList")
                     # currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
                     Log.info(f"Found {len(currentOffers)} offers.")
+                    json.dump(currentOffers, open('json/currentOffers.json', 'w'), indent=2)
                     for offer in currentOffers:
                         offerResponseObject = Offer(offerResponseObject=offer, service_areas=self.getAllServiceAreas())
                         self.process_offer(offerResponseObject)
