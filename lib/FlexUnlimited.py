@@ -528,6 +528,7 @@ class FlexUnlimited:
 
     def process_offer(self, offer: Offer):
         if offer.offer_data.get("hidden") and configFile["ignoreHidden"]:
+            print("Hidden offer")
             return
 
         weekday = offer.expiration_date().weekday()
@@ -597,7 +598,11 @@ class FlexUnlimited:
         return self.__acceptHeaders
 
     def solve_captcha(self, url_captcha):
-        self.driver.solve(url_captcha)
+        try:
+            self.driver.solve(url_captcha)
+        except Exception as e:
+            print("Error solving captcha", e)
+            return e
         self.driver.run(self.session, self.sign_validity_headers())
 
     def run(self):
