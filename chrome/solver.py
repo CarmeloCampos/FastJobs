@@ -8,9 +8,18 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+def run(token, session, header):
+    payload = {'challengeToken': token}
+    reqcaptcha = session.post("https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header, json=payload)
+    print(payload, reqcaptcha.status_code, reqcaptcha.text)
+    if reqcaptcha.status_code == 200:
+        print('Captcha Solved')
+    else:
+        print('Captcha not solved')
+
+
 class Solver(object):
     def __init__(self, user_agent):
-        self.token = None
         options = webdriver.ChromeOptions()
         options.add_extension("Captcha-Solver-Auto-captcha-solving-service.crx")
         options.add_argument("--user-agent=" + user_agent)
@@ -33,21 +42,13 @@ class Solver(object):
     def intent_solve(self, url_captcha):
         self.driver.get(url_captcha)
         sleep(randint(8, 17))
+        print("Solving captcha", self.driver.current_url)
         if 'uniqueValidationId' in self.driver.current_url:
             return True
 
     def solve(self, url_captcha):
-        self.intent_solve(url_captcha)
-        parsed_url = urlparse(self.driver.current_url)
-        query_params = parse_qs(parsed_url.query)
-        session_token = query_params['sessionToken'][0]
-        self.token = unquote(session_token)
-
-    def run(self, session, header):
-        payload = {'challengeToken': self.token}
-        reqcaptcha = session.post("https://flex-capacity-na.amazon.com/ValidateChallenge", headers=header, json=payload)
-        print(payload, reqcaptcha.status_code, reqcaptcha.text)
-        if reqcaptcha.status_code == 200:
-            print('Captcha Solved')
-        else:
-            print('Captcha not solved')
+        if self.intent_solve(url_captcha):
+            parsed_url = urlparse(self.driver.current_url)
+            query_params = parse_qs(parsed_url.query)
+            session_token = query_params['sessionToken'][0]
+            return unquote(session_token)

@@ -19,7 +19,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from pbkdf2 import PBKDF2
 from requests.models import Response
 
-from chrome.solver import Solver
+from chrome.solver import Solver, run
 from lib.Chain import get_chain
 from lib.Log import Log
 from lib.Offer import Offer
@@ -528,20 +528,16 @@ class FlexUnlimited:
 
     def process_offer(self, offer: Offer):
         if offer.offer_data.get("hidden") and configFile["ignoreHidden"]:
-            print("Hidden offer")
             return
 
         weekday = offer.expiration_date().weekday()
         if self.desiredWeekdays and weekday not in self.desiredWeekdays:
-            print("Weekday not desired")
             return
 
         if self.options['minBlockRate'] and offer.block_rate() < self.options['minBlockRate']:
-            print("Block rate too low")
             return
 
         if self.options['minPayRatePerHour'] and offer.rate_per_hour() < self.options['minPayRatePerHour']:
-            print("Pay rate per hour too low")
             return
 
         if self.options['arrivalBuffer']:
@@ -598,12 +594,11 @@ class FlexUnlimited:
         return self.__acceptHeaders
 
     def solve_captcha(self, url_captcha):
-        try:
-            self.driver.solve(url_captcha)
-        except Exception as e:
-            print("Error solving captcha", e)
-            return e
-        self.driver.run(self.session, self.sign_validity_headers())
+        token = self.driver.solve(url_captcha)
+        if not token:
+            Log.error("Captcha not solved")
+            return
+        run(token, self.session, self.sign_validity_headers())
 
     def run(self):
         Log.info("Starting job search...")
