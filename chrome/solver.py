@@ -41,10 +41,21 @@ class Solver(object):
 
     def intent_solve(self, url_captcha):
         self.driver.get(url_captcha)
-        sleep(randint(8, 17))
-        print("Solving captcha", self.driver.current_url)
-        if 'uniqueValidationId' in self.driver.current_url:
-            return True
+
+        initial_sleep_time = randint(8, 17)
+        sleep(initial_sleep_time)
+
+        while True:
+            if 'uniqueValidationId' in self.driver.current_url:
+                break
+
+            if self.driver.current_url != url_captcha:
+                print("URL changed", url_captcha, self.driver.current_url)
+                break
+
+            sleep(1)
+
+        return True
 
     def solve(self, url_captcha):
         if self.intent_solve(url_captcha):
