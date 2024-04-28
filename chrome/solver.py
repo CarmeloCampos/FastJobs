@@ -40,6 +40,7 @@ class Solver(object):
         sleep(1)
 
     def intent_solve(self, url_captcha):
+        print("Solving captcha")
         self.driver.get(url_captcha)
 
         initial_sleep_time = randint(8, 17)
@@ -47,6 +48,7 @@ class Solver(object):
 
         while True:
             if 'uniqueValidationId' in self.driver.current_url:
+                print("Captcha solved")
                 break
 
             if self.driver.current_url != url_captcha:
