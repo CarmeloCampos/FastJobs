@@ -40,3 +40,10 @@ async def stop_search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         reload_finder()
     else:
         await update.message.reply_text(langFile['noSearchInProgress'])
+
+
+async def send_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if get_finder():
+        await update.message.reply_text(langFile['searching'])
+    else:
+        await update.message.reply_text(langFile['searchStopped'])

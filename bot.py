@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, filters
 
 from sis.lang import langFile
-from tg.blocks import search, stop_search
+from tg.blocks import search, stop_search, send_status
 from tg.bot import application, cancel
 from tg.checkuser import restricted
 from tg.configuration import conv_config, allow_chats_id
@@ -25,6 +25,7 @@ def main() -> None:
     application.add_handler(conv_config)
     application.add_handler(MessageHandler(filters.Regex('^' + langFile["SEARCHBLOCK"] + '$'), search))
     application.add_handler(MessageHandler(filters.Regex('^' + langFile["STOPSEARCH"] + '$'), stop_search))
+    application.add_handler(MessageHandler(filters.Regex('^' + langFile["STATUS"] + '$'), send_status))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 

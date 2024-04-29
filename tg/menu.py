@@ -4,7 +4,7 @@ from sis.lang import langFile
 
 main_menu = ReplyKeyboardMarkup([
     [langFile['SEARCHBLOCK'], langFile['STOPSEARCH']],
-    [langFile['CONFIGURATIONS']]
+    [langFile['STATUS'], langFile['CONFIGURATIONS']]
 ], resize_keyboard=True)
 
 config_menu = ReplyKeyboardMarkup([
