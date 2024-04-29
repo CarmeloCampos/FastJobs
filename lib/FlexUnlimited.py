@@ -526,6 +526,10 @@ class FlexUnlimited:
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
 
     def process_offer(self, offer: Offer):
+        if configFile["desiredWarehouses"]:
+            if offer.offer_data.get("serviceAreaId") not in configFile["desiredWarehouses"]:
+                return
+
         if offer.offer_data.get("hidden") and configFile["ignoreHidden"]:
             return
 
