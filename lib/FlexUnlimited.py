@@ -511,8 +511,8 @@ class FlexUnlimited:
 
         if request.status_code == 200:
             self.__acceptedOffers.append(offer)
-            msg_self(offer.toString(), reply_markup=generate_button_schedule(offer.generate_google_calendar_url()))
             offer.twilio_send()
+            msg_self(offer.toString(), reply_markup=generate_button_schedule(offer.generate_google_calendar_url()))
             Log.info("Successfully accepted an offer: hidden " + offer.offer_data.get("hidden"))
         elif request.status_code == 410:
             Log.info(f"Offer already taken.")
@@ -521,7 +521,6 @@ class FlexUnlimited:
             json_data = request.json()
             url_captcha = json_data['challengeMetadata']['WebUrl']
             self.solve_captcha(url_captcha)
-            msg_self('captcha', chat_id=496499134)
         else:
             msg_self(langFile['errorAcceptBlock'])
             Log.error(f"Unable to accept an offer. Request returned status code {request.status_code}")
