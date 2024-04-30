@@ -1,4 +1,3 @@
-from random import randint
 from time import sleep, time
 from urllib.parse import urlparse, parse_qs, unquote
 
@@ -50,28 +49,23 @@ class Solver(object):
             self.open_new_driver_session()
 
     def prepare(self):
-        self.ensure_driver_is_alive()
         print("Preparing captcha solver")
         self.driver.get('chrome-extension://pgojnojmmhpofjgdmaebadhbocahppod/www/index.html#/popup')
 
         wait = WebDriverWait(self.driver, 10)
         input_api_key = wait.until(expected_conditions.presence_of_element_located((By.CLASS_NAME, 'q-placeholder')))
-
         input_api_key.click()
         input_api_key.send_keys('CAP-230757974B6E422FAECA15002B49D7B1')
         sleep(1)
         button_save = self.driver.find_element(By.CLASS_NAME, 'text-balance')
         button_save.click()
-        button_save.click()
         sleep(1)
+        print("Captcha solver ready")
 
     def intent_solve(self, url_captcha):
-        self.ensure_driver_is_alive()
         print("Solving captcha")
         self.driver.get(url_captcha)
 
-        initial_sleep_time = randint(8, 17)
-        sleep(initial_sleep_time)
         start_solve = time()
         while True:
             if 'uniqueValidationId' in self.driver.current_url:
