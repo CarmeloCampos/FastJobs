@@ -34,6 +34,7 @@ class Solver(object):
     def open_new_driver_session(self):
         try:
             self.driver = webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=self.options)
+            self.prepare()
         except WebDriverException as e:
             print(f"Error opening a new driver session: {e}")
 
@@ -51,6 +52,7 @@ class Solver(object):
 
     def prepare(self):
         self.ensure_driver_is_alive()
+        print("Preparing captcha solver")
         self.driver.get('chrome-extension://pgojnojmmhpofjgdmaebadhbocahppod/www/index.html#/popup')
 
         wait = WebDriverWait(self.driver, 10)
@@ -61,6 +63,7 @@ class Solver(object):
         sleep(1)
         button_save = self.driver.find_element(By.CLASS_NAME, 'text-balance')
         button_save.click()
+        print("Balance", button_save.text)
         sleep(1)
 
     def intent_solve(self, url_captcha):
