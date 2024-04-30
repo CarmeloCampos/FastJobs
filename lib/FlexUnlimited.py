@@ -136,7 +136,6 @@ class FlexUnlimited:
             },
             "serviceAreaIds": self.serviceAreaIds
         }
-        self.driver.prepare()
 
         if not self.key_id or self.key_id_expiration is None or (
                 int(time.time() * 1000) > int(self.key_id_expiration)): self.get_key_id()

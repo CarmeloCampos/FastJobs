@@ -20,20 +20,18 @@ def run(token, session, header):
         print('Captcha not solved')
 
 
-options = webdriver.ChromeOptions()
-options.add_extension("Captcha-Solver-Auto-captcha-solving-service.crx")
-
-
 class Solver(object):
     def __init__(self, user_agent):
-        options.add_argument("--user-agent=" + user_agent)
-        self.options = options
+        self.user_agent = user_agent
         self.driver: WebDriver = None
         self.open_new_driver_session()
 
     def open_new_driver_session(self):
         try:
-            self.driver = webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=self.options)
+            options = webdriver.ChromeOptions()
+            options.add_extension("Captcha-Solver-Auto-captcha-solving-service.crx")
+            options.add_argument("--user-agent=" + self.user_agent)
+            self.driver = webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=options)
             self.prepare()
         except WebDriverException as e:
             print(f"Error opening a new driver session: {e}")
@@ -62,6 +60,7 @@ class Solver(object):
         input_api_key.send_keys('CAP-230757974B6E422FAECA15002B49D7B1')
         sleep(1)
         button_save = self.driver.find_element(By.CLASS_NAME, 'text-balance')
+        button_save.click()
         button_save.click()
         sleep(1)
 
