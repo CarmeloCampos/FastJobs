@@ -63,7 +63,6 @@ class Solver(object):
         sleep(1)
         button_save = self.driver.find_element(By.CLASS_NAME, 'text-balance')
         button_save.click()
-        print("Balance", button_save.text)
         sleep(1)
 
     def intent_solve(self, url_captcha):
