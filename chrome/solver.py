@@ -5,6 +5,7 @@ from urllib.parse import urlparse, parse_qs, unquote
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -27,12 +28,29 @@ class Solver(object):
     def __init__(self, user_agent):
         options.add_argument("--user-agent=" + user_agent)
         self.options = options
-        self.driver = self.new_driver()
+        self.driver: WebDriver = None
+        self.open_new_driver_session()
 
-    def new_driver(self):
-        return webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=self.options)
+    def open_new_driver_session(self):
+        try:
+            self.driver = webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=self.options)
+        except WebDriverException as e:
+            print(f"Error opening a new driver session: {e}")
+
+    def is_driver_alive(self) -> bool:
+        try:
+            _ = self.driver.title
+            return True
+        except WebDriverException:
+            return False
+
+    def ensure_driver_is_alive(self):
+        if self.driver is None or not self.is_driver_alive():
+            print("Driver not available, opening a new session.")
+            self.open_new_driver_session()
 
     def prepare(self):
+        self.ensure_driver_is_alive()
         self.driver.get('chrome-extension://pgojnojmmhpofjgdmaebadhbocahppod/www/index.html#/popup')
 
         wait = WebDriverWait(self.driver, 10)
@@ -46,13 +64,9 @@ class Solver(object):
         sleep(1)
 
     def intent_solve(self, url_captcha):
+        self.ensure_driver_is_alive()
         print("Solving captcha")
-        try:
-            self.driver.get(url_captcha)
-        except WebDriverException as e:
-            self.driver = self.new_driver()
-            self.prepare()
-            return self.intent_solve(url_captcha)
+        self.driver.get(url_captcha)
 
         initial_sleep_time = randint(8, 17)
         sleep(initial_sleep_time)
@@ -71,6 +85,7 @@ class Solver(object):
         return True
 
     def solve(self, url_captcha):
+        self.ensure_driver_is_alive()
         if self.intent_solve(url_captcha):
             parsed_url = urlparse(self.driver.current_url)
             query_params = parse_qs(parsed_url.query)
