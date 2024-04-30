@@ -3,6 +3,7 @@ services:
   chromelocal:
     image: selenium/standalone-chrome:latest
     shm_size: 2gb
+    restart: unless-stopped
     environment:
       - SE_NODE_MAX_SESSIONS=100
       - SE_SESSION_REQUEST_TIMEOUT=31557600
@@ -20,6 +21,8 @@ services:
     depends_on:
       - chromelocal
     restart: unless-stopped
+    environment:
+      - CONFIG=config
     networks:
       fastnet:
         ipv4_address: 192.168.50.4

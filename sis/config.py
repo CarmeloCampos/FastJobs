@@ -1,6 +1,7 @@
 from json import load
+from os import environ
 
-nameFile = 'json/config.json'
+nameFile = 'json/{}.json'.format(environ.get('CONFIG', 'config'))
 configFile = load(open(nameFile))
 
 flex_data = {
