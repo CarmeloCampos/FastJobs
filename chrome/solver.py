@@ -1,5 +1,5 @@
 from random import randint
-from time import sleep
+from time import sleep, time
 from urllib.parse import urlparse, parse_qs, unquote
 
 from selenium import webdriver
@@ -72,19 +72,20 @@ class Solver(object):
 
         initial_sleep_time = randint(8, 17)
         sleep(initial_sleep_time)
-
+        start_solve = time()
         while True:
             if 'uniqueValidationId' in self.driver.current_url:
                 print("Captcha solved")
-                break
+                return True
 
             if self.driver.current_url != url_captcha:
                 print("URL changed", url_captcha, self.driver.current_url)
-                break
+
+            if time() - start_solve > 60:
+                print("Timeout reached while solving captcha")
+                return False
 
             sleep(1)
-
-        return True
 
     def solve(self, url_captcha):
         self.ensure_driver_is_alive()
