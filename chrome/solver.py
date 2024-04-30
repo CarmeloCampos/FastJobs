@@ -33,6 +33,7 @@ class Solver(object):
             options.add_argument("--user-agent=" + self.user_agent)
             self.driver = webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=options)
             self.prepare()
+            self.driver.get('https://www.amazon.com')
         except WebDriverException as e:
             print(f"Error opening a new driver session: {e}")
 
