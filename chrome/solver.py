@@ -3,6 +3,7 @@ from time import sleep
 from urllib.parse import urlparse, parse_qs, unquote
 
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
@@ -18,13 +19,18 @@ def run(token, session, header):
         print('Captcha not solved')
 
 
+options = webdriver.ChromeOptions()
+options.add_extension("Captcha-Solver-Auto-captcha-solving-service.crx")
+
+
 class Solver(object):
     def __init__(self, user_agent):
-        options = webdriver.ChromeOptions()
-        options.add_extension("Captcha-Solver-Auto-captcha-solving-service.crx")
         options.add_argument("--user-agent=" + user_agent)
         self.options = options
-        self.driver = webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=self.options)
+        self.driver = self.new_driver()
+
+    def new_driver(self):
+        return webdriver.Remote(command_executor="http://192.168.50.3:4444/wd/hub", options=self.options)
 
     def prepare(self):
         self.driver.get('chrome-extension://pgojnojmmhpofjgdmaebadhbocahppod/www/index.html#/popup')
@@ -41,7 +47,12 @@ class Solver(object):
 
     def intent_solve(self, url_captcha):
         print("Solving captcha")
-        self.driver.get(url_captcha)
+        try:
+            self.driver.get(url_captcha)
+        except WebDriverException as e:
+            self.driver = self.new_driver()
+            self.prepare()
+            return self.intent_solve(url_captcha)
 
         initial_sleep_time = randint(8, 17)
         sleep(initial_sleep_time)
