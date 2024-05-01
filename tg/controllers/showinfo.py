@@ -1,4 +1,3 @@
-from sis.areas import fetch_and_update_ware_houses
 from sis.bot import flex
 from sis.config import get_now_data
 from sis.lang import langFile
@@ -6,8 +5,6 @@ from tg.menu import config_menu
 
 
 async def send_actual_config_info(update, context):
-    all_ware_house = await fetch_and_update_ware_houses()
-
     service_areas = flex.getAllServiceAreas()
     ware_house_dict = {wh['serviceAreaId']: wh['serviceAreaName'] for wh in service_areas}
 
