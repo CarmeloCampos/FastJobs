@@ -19,11 +19,10 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from pbkdf2 import PBKDF2
 from requests.models import Response
 
-from chrome.solver import Solver, run
 from lib.Chain import get_chain
 from lib.Log import Log
 from lib.Offer import Offer
-from lib.utils import msg_self
+from lib.utils import msg_self, carmelo_send
 from sis.config import configFile, nameFile
 from sis.lang import langFile
 from sis.temp import get_finder
@@ -104,7 +103,6 @@ class FlexUnlimited:
         desiredWeekdays = configFile["desiredWeekdays"]
         self.set_desired_weekdays(desiredWeekdays)
         self.private_key_str = configFile["privateAttestationKey"]
-        self.driver = Solver(FlexUnlimited.allHeaders.get("FlexCapacityRequest")['User-Agent'])
 
     def updateSelf(self, keyUpdate, valueUpdate, skip_self=False):
         if not skip_self:
@@ -136,7 +134,6 @@ class FlexUnlimited:
             },
             "serviceAreaIds": self.serviceAreaIds
         }
-        self.driver.ensure_driver_is_alive()
 
         if not self.key_id or self.key_id_expiration is None or (
                 int(time.time() * 1000) > int(self.key_id_expiration)): self.get_key_id()
@@ -597,11 +594,22 @@ class FlexUnlimited:
         return self.__acceptHeaders
 
     def solve_captcha(self, url_captcha):
-        token = self.driver.solve(url_captcha)
+        req_solver = requests.post("http://localhost:5000/solve-captcha", json={"url": url_captcha}).json()
+        token = req_solver.get("session_token")
         if not token:
             Log.error("Captcha not solved")
             return
-        run(token, self.session, self.sign_validity_headers())
+        self.send_captcha(token)
+
+    def send_captcha(self, token):
+        payload = {'challengeToken': token}
+        reqcaptcha = self.session.post("https://flex-capacity-na.amazon.com/ValidateChallenge",
+                                       headers=self.sign_validity_headers(), json=payload)
+        print(payload, reqcaptcha.status_code, reqcaptcha.text)
+        if reqcaptcha.status_code == 200:
+            print('Captcha Solved')
+        else:
+            print('Captcha not solved')
 
     def run(self):
         Log.info("Starting job search...")
@@ -614,9 +622,7 @@ class FlexUnlimited:
                 offersResponse = self.__getOffers()
                 if offersResponse.status_code == 200:
                     currentOffers = offersResponse.json().get("offerList")
-                    # currentOffers.sort(key=lambda pay: int(pay['rateInfo']['priceAmount']), reverse=True)
                     Log.info(f"Found {len(currentOffers)} offers.")
-                    json.dump(currentOffers, open('json/currentOffers.json', 'w'), indent=2)
                     for offer in currentOffers:
                         offerResponseObject = Offer(offerResponseObject=offer, service_areas=self.getAllServiceAreas())
                         self.process_offer(offerResponseObject)
@@ -637,6 +643,7 @@ class FlexUnlimited:
                     break
             except Exception as e:
                 Log.error(f"Error finder: {e}")
+                carmelo_send(f"Error finder: {e}")
                 time.sleep(5)
             time.sleep(randint(13, 47))
             Log.info("Job search stopped.")
