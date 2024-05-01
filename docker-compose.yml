@@ -5,5 +5,12 @@ services:
     volumes:
       - ./json:/usr/src/app/json
     restart: unless-stopped
+    networks:
+      - apinet
     environment:
       - CONFIG=config
+
+networks:
+  apinet:
+    external: true
+    name: chromejobs_apinet

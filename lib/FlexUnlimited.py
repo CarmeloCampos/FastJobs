@@ -594,7 +594,7 @@ class FlexUnlimited:
         return self.__acceptHeaders
 
     def solve_captcha(self, url_captcha):
-        req_solver = requests.post("http://localhost:5000/solve-captcha", json={"url": url_captcha}).json()
+        req_solver = requests.post("http://apijobs:5000/solve-captcha", json={"url": url_captcha}).json()
         token = req_solver.get("session_token")
         if not token:
             Log.error("Captcha not solved")
