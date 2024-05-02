@@ -25,6 +25,7 @@ from lib.Offer import Offer
 from lib.utils import msg_self, carmelo_send
 from sis.config import configFile, nameFile
 from sis.lang import langFile
+from sis.req import req_solver
 from sis.temp import get_finder
 from tg.menu import generate_button_schedule
 
@@ -594,11 +595,7 @@ class FlexUnlimited:
         return self.__acceptHeaders
 
     def solve_captcha(self, url_captcha):
-        req_solver = requests.post("http://apijobs:5000/solve-captcha", json={"url": url_captcha}).json()
-        token = req_solver.get("session_token")
-        if not token:
-            Log.error("Captcha not solved")
-            return
+        token = req_solver(url_captcha)
         self.send_captcha(token)
 
     def send_captcha(self, token):
