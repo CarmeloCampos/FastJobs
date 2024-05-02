@@ -623,8 +623,9 @@ class FlexUnlimited:
                 if offersResponse.status_code == 200:
                     currentOffers = offersResponse.json().get("offerList")
                     Log.info(f"Found {len(currentOffers)} offers.")
+                    service_areas = self.getAllServiceAreas()
                     for offer in currentOffers:
-                        offerResponseObject = Offer(offerResponseObject=offer, service_areas=self.getAllServiceAreas())
+                        offerResponseObject = Offer(offerResponseObject=offer, service_areas=service_areas)
                         self.process_offer(offerResponseObject)
                 elif offersResponse.status_code == 400:
                     minutes_to_wait = 30 * self.__rate_limit_number
