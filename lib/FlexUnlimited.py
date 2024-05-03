@@ -529,9 +529,6 @@ class FlexUnlimited:
             if offer.offer_data.get("serviceAreaId") not in configFile["desiredWarehouses"]:
                 return
 
-        if not is_valid_offer(offer.offer_data, configFile):
-            return print("Offer not valid")
-
         if self.options['minBlockRate'] and offer.block_rate() < self.options['minBlockRate']:
             return
 
@@ -541,6 +538,9 @@ class FlexUnlimited:
         if self.options['arrivalBuffer']:
             if (offer.expiration_date() - datetime.now()).seconds / 60 < self.options['arrivalBuffer']:
                 return
+
+        if not is_valid_offer(offer.offer_data, configFile):
+            return print("Offer not valid")
 
         self.__acceptOffer(offer)
         self.sign_accept_headers()
