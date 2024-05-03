@@ -22,7 +22,7 @@ from requests.models import Response
 from lib.Chain import get_chain
 from lib.Log import Log
 from lib.Offer import Offer
-from lib.utils import msg_self, carmelo_send
+from lib.utils import msg_self
 from sis.config import configFile, nameFile
 from sis.lang import langFile
 from sis.req import req_solver
@@ -641,7 +641,6 @@ class FlexUnlimited:
                     break
             except Exception as e:
                 Log.error(f"Error finder: {e}")
-                carmelo_send(f"Error finder: {e}")
                 time.sleep(5)
             time.sleep(randint(13, 47))
             Log.info("Job search stopped.")
