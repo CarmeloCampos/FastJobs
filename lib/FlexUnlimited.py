@@ -24,6 +24,7 @@ from lib.Log import Log
 from lib.Offer import Offer
 from lib.utils import msg_self
 from sis.config import configFile, nameFile
+from sis.desired import is_valid_offer
 from sis.lang import langFile
 from sis.req import req_solver
 from sis.temp import get_finder
@@ -528,12 +529,8 @@ class FlexUnlimited:
             if offer.offer_data.get("serviceAreaId") not in configFile["desiredWarehouses"]:
                 return
 
-        if offer.offer_data.get("hidden") and configFile["ignoreHidden"]:
-            return
-
-        weekday = offer.expiration_date().weekday()
-        if self.desiredWeekdays and weekday not in self.desiredWeekdays:
-            return
+        if not is_valid_offer(offer.offer_data, configFile):
+            return print("Offer not valid")
 
         if self.options['minBlockRate'] and offer.block_rate() < self.options['minBlockRate']:
             return
